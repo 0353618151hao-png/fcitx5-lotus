@@ -869,6 +869,108 @@ namespace fcitx {
         }
     }
 
+    void LotusState::handleOffModeMacro(KeyEvent& keyEvent, KeySym currentSym) {
+        // 1. Special keys: Tab, arrows, Escape, modifiers, Delete → forward + reset
+        if (checkForwardSpecialKey(keyEvent, currentSym)) {
+            keyEvent.forward();
+            return;
+        }
+
+        // 2. Try to ensure uinput is available for potential replacement
+        if (uinput_client_fd_ < 0) {
+            connect_uinput_server();
+        }
+
+        // 3. Backspace → feed to engine for shadow state tracking, then forward
+        if (isBackspace(currentSym)) {
+            EngineProcessKeyEvent(lotusEngine_.handle(), FcitxKey_BackSpace, 0);
+            auto preeditC = UniqueCPtr<char>(EnginePullPreedit(lotusEngine_.handle()));
+            oldPreBuffer_ = (preeditC && (*preeditC.get() != 0)) ? preeditC.get() : "";
+            keyEvent.forward();
+            return;
+        }
+
+        // 4. Return/Enter → forward, clear shadow state
+        if (currentSym == FcitxKey_Return) {
+            if (!oldPreBuffer_.empty()) {
+                ResetEngine(lotusEngine_.handle());
+                oldPreBuffer_.clear();
+            }
+            keyEvent.forward();
+            return;
+        }
+
+        // 5. Get UTF-8 representation of the trigger key
+        std::string keyUtf8 = Key::keySymToUTF8(currentSym);
+
+        // 6. Process key through Go engine (shadow processing)
+        bool processed = EngineProcessKeyEvent(lotusEngine_.handle(), currentSym, keyEvent.rawKey().states()) != 0U;
+
+        // 7. Check for engine commit
+        auto commitPtr = UniqueCPtr<char>(EnginePullCommit(lotusEngine_.handle()));
+        if (processed && commitPtr && (*commitPtr.get() != 0)) {
+            std::string commitStr = commitPtr.get();
+
+            // Determine if this is a macro expansion or just confirmed typed text
+            bool isMacroExpansion;
+            if (keyUtf8.empty()) {
+                isMacroExpansion = (commitStr != oldPreBuffer_);
+            } else {
+                isMacroExpansion = (commitStr != oldPreBuffer_ + keyUtf8);
+            }
+
+            if (isMacroExpansion) {
+                LOTUS_INFO("Macro expansion: '" + oldPreBuffer_ + "' -> '" + commitStr + "'");
+                // Try uinput replacement first, fallback to deleteSurroundingText, then plain commit
+                if (uinput_client_fd_ >= 0 && !oldPreBuffer_.empty()) {
+                    performReplacement(oldPreBuffer_, commitStr);
+                } else if (ic_->capabilityFlags().test(CapabilityFlag::SurroundingText)) {
+                    const auto& surrounding = ic_->surroundingText();
+                    if (surrounding.isValid()) {
+                        size_t oldLen = utf8::length(oldPreBuffer_);
+                        if (oldLen > 0) {
+                            ic_->deleteSurroundingText(-static_cast<int>(oldLen), static_cast<int>(oldLen));
+                        }
+                        ic_->commitString(commitStr);
+                    } else {
+                        ic_->commitString(commitStr);
+                    }
+                } else {
+                    ic_->commitString(commitStr);
+                }
+                keyEvent.filterAndAccept();
+            } else {
+                // No macro: typed text confirmed by engine, just forward trigger key
+                keyEvent.forward();
+            }
+
+            oldPreBuffer_.clear();
+            hasHistory_ = false;
+            return;
+        }
+
+        // 8. No commit or engine rejected the key
+        if (processed || (commitPtr && (*commitPtr.get() != 0))) {
+            // Engine processed the key (building shadow state)
+            // OR engine rejected the key but committed old text (non-processable key)
+            auto preeditPtr = UniqueCPtr<char>(EnginePullPreedit(lotusEngine_.handle()));
+            oldPreBuffer_   = (preeditPtr && (*preeditPtr.get() != 0)) ? preeditPtr.get() : "";
+            if (!processed) {
+                // Engine committed old text but didn't process the new key → forward the key
+                oldPreBuffer_.clear();
+                hasHistory_ = false;
+            }
+            keyEvent.forward();
+        } else {
+            // Engine didn't handle this key
+            if (!oldPreBuffer_.empty()) {
+                ResetEngine(lotusEngine_.handle());
+                oldPreBuffer_.clear();
+            }
+            keyEvent.forward();
+        }
+    }
+
     void LotusState::keyEvent(KeyEvent& keyEvent) {
         if (!lotusEngine_ || keyEvent.isRelease() || keyEvent.rawKey().isModifier())
             return;
@@ -1008,6 +1110,9 @@ namespace fcitx {
                 break;
             }
             default: {
+                if (*engine_->config().enableMacroInOffMode && *engine_->config().enableMacro) {
+                    handleOffModeMacro(keyEvent, currentSym);
+                }
                 break;
             }
         }
