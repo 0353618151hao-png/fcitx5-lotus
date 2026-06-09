@@ -608,16 +608,7 @@ namespace fcitx {
         if (!keyEvent.isRelease() && !config_.cycleModeKey->empty() && keyEvent.key().checkKeyList(*config_.cycleModeKey)) {
             LOTUS_INFO("Cycle mode key pressed");
             std::string appName  = getProgramName(ic);
-            LotusMode   realMode = LotusMode::Preedit;
-#if __cplusplus >= 202002L
-            if (appRules_.contains(appName)) {
-#else
-            if (appRules_.find(appName) != appRules_.end()) {
-#endif
-                realMode = appRules_[appName];
-            } else {
-                realMode = config().mode.value();
-            }
+            LotusMode   realMode = getAppRule(appName);
 
             auto                                      order      = stringutils::split(*config_.modeOrder, ",");
             std::vector<std::pair<std::string, bool>> visibility = {{"Smooth", *config_.showModeSmooth},
@@ -640,24 +631,38 @@ namespace fcitx {
                     }
                 }
                 if (visible) {
+                    LotusMode mode;
                     if (name == "Smooth")
-                        enabledModes.push_back(LotusMode::Smooth);
+                        mode = LotusMode::Smooth;
                     else if (name == "Uinput")
-                        enabledModes.push_back(LotusMode::Uinput);
+                        mode = LotusMode::Uinput;
                     else if (name == "Minecraft")
-                        enabledModes.push_back(LotusMode::Minecraft);
+                        mode = LotusMode::Minecraft;
                     else if (name == "SurroundingText")
-                        enabledModes.push_back(LotusMode::SurroundingText);
+                        mode = LotusMode::SurroundingText;
                     else if (name == "Preedit")
-                        enabledModes.push_back(LotusMode::Preedit);
+                        mode = LotusMode::Preedit;
                     else if (name == "Emoji")
-                        enabledModes.push_back(LotusMode::Emoji);
+                        mode = LotusMode::Emoji;
                     else if (name == "Off")
-                        enabledModes.push_back(LotusMode::Off);
+                        mode = LotusMode::Off;
                     else if (name == "SuperSmooth")
-                        enabledModes.push_back(LotusMode::SuperSmooth);
+                        mode = LotusMode::SuperSmooth;
                     else if (name == "Default")
-                        enabledModes.push_back(config().mode.value());
+                        mode = config().mode.value();
+                    else
+                        continue;
+
+                    bool duplicate = false;
+                    for (auto m : enabledModes) {
+                        if (m == mode) {
+                            duplicate = true;
+                            break;
+                        }
+                    }
+                    if (!duplicate) {
+                        enabledModes.push_back(mode);
+                    }
                 }
             }
 

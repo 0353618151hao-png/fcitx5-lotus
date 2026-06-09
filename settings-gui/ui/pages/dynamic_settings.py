@@ -614,10 +614,16 @@ class DynamicSettingsPage(QWidget):
         finally:
             self.blockSignals(False)
 
+    def has_validation_errors(self):
+        self._validate_mode_shortcuts()
+        return bool(self.validation_errors)
+
+    def validation_message(self):
+        return "\n".join(self.validation_errors)
+
     def save_data(self):
         """Commits all staged changes to DBus."""
-        self._validate_mode_shortcuts()
-        if self.validation_errors:
+        if self.has_validation_errors():
             return False
 
         if not self.modified_values:
@@ -636,11 +642,12 @@ class DynamicSettingsPage(QWidget):
         """Updates internal state and notifies parent window of change."""
         self.modified_values[key] = new_value
         self.current_values[key] = new_value
-        # Notify the parent window (LotusSettingsWindow) if it exists
-        main_win = self.window()
-        if hasattr(main_win, "on_changed"):
-            main_win.on_changed()
 
         # Real-time validation if it's a shortcut
         if key in MODE_SHORTCUT_KEYS or key in MODE_SHORTCUT_TO_VISIBILITY.values():
             self._validate_mode_shortcuts()
+
+        # Notify the parent window (LotusSettingsWindow) if it exists
+        main_win = self.window()
+        if hasattr(main_win, "on_changed"):
+            main_win.on_changed()
