@@ -62,12 +62,12 @@ class MacroEditorPage(BaseEditorPage):
         self.cb_enable.toggled.connect(self._on_item_changed)
         self.cb_capitalize.toggled.connect(self._on_item_changed)
         toggles_layout.addWidget(self.cb_enable)
-        
+
         cap_layout = QHBoxLayout()
         cap_layout.setSpacing(5)
         cap_layout.addWidget(self.cb_capitalize)
         add_help_icon(cap_layout, "CapitalizeMacro")
-        
+
         toggles_layout.addLayout(cap_layout)
         toggles_layout.addStretch()
 
@@ -91,25 +91,25 @@ class MacroEditorPage(BaseEditorPage):
         # Dynamic Macro Settings (Moved below the macro table)
         dynamic_card = CardWidget("")
         dynamic_layout = QVBoxLayout()
-        
+
         # Hint text
         hint_label = QLabel(_("Macros support dynamic placeholders: $TIME and $DATE."))
         hint_label.setWordWrap(True)
         hint_label.setStyleSheet("color: gray; font-size: 13px;")
         dynamic_layout.addWidget(hint_label)
-        
+
         # Format Inputs
         fmt_container = QWidget()
         fmt_hbox = QHBoxLayout(fmt_container)
         fmt_hbox.setContentsMargins(0, 5, 0, 0)
         fmt_hbox.setSpacing(20)
-        
+
         # Time Format
         time_layout = QHBoxLayout()
         self.input_time_format = QComboBox()
         self.input_time_format.setEditable(False)
         self.input_time_format.currentIndexChanged.connect(self._on_item_changed)
-        
+
         time_presets = [
             ("%H:%M", "15:04 (24h)"),
             ("%H:%M:%S", "15:04:05 (24h)"),
@@ -119,11 +119,13 @@ class MacroEditorPage(BaseEditorPage):
         ]
         for fmt, desc in time_presets:
             self.input_time_format.addItem(fmt, fmt)
-            self.input_time_format.setItemData(self.input_time_format.count() - 1, desc, Qt.ToolTipRole)
+            self.input_time_format.setItemData(
+                self.input_time_format.count() - 1, desc, Qt.ToolTipRole
+            )
 
         time_layout.addWidget(QLabel(_("Time Format:")))
         time_layout.addWidget(self.input_time_format, 1)
-        
+
         # Date Format
         date_layout = QHBoxLayout()
         self.input_date_format = QComboBox()
@@ -140,16 +142,18 @@ class MacroEditorPage(BaseEditorPage):
         ]
         for fmt, desc in date_presets:
             self.input_date_format.addItem(fmt, fmt)
-            self.input_date_format.setItemData(self.input_date_format.count() - 1, desc, Qt.ToolTipRole)
+            self.input_date_format.setItemData(
+                self.input_date_format.count() - 1, desc, Qt.ToolTipRole
+            )
 
         date_layout.addWidget(QLabel(_("Date Format:")))
         date_layout.addWidget(self.input_date_format, 1)
-        
+
         fmt_hbox.addLayout(time_layout)
         fmt_hbox.addLayout(date_layout)
-        
+
         dynamic_layout.addWidget(fmt_container)
-        
+
         dynamic_card.content_layout.addLayout(dynamic_layout)
         main_layout.addWidget(dynamic_card)
 
@@ -233,7 +237,9 @@ class MacroEditorPage(BaseEditorPage):
                     self.input_time_format.setCurrentIndex(index)
                 else:
                     # Fallback to default if not in list (since it's not editable anymore)
-                    self.input_time_format.setCurrentIndex(self.input_time_format.findData("%H:%M"))
+                    self.input_time_format.setCurrentIndex(
+                        self.input_time_format.findData("%H:%M")
+                    )
 
                 # Set date format
                 date_fmt = values.get("DateFormat", "%d/%m/%Y")
@@ -241,7 +247,9 @@ class MacroEditorPage(BaseEditorPage):
                 if index >= 0:
                     self.input_date_format.setCurrentIndex(index)
                 else:
-                    self.input_date_format.setCurrentIndex(self.input_date_format.findData("%d/%m/%Y"))
+                    self.input_date_format.setCurrentIndex(
+                        self.input_date_format.findData("%d/%m/%Y")
+                    )
 
             self.table.setRowCount(0)
             data = self.dbus.get_sub_config_list("lotus-macro", "Macro")
@@ -284,7 +292,10 @@ class MacroEditorPage(BaseEditorPage):
             val_item = self.table.item(row, 1)
             if key_item and key_item.text():
                 data.append(
-                    {"Key": key_item.text(), "Value": val_item.text() if val_item else ""}
+                    {
+                        "Key": key_item.text(),
+                        "Value": val_item.text() if val_item else "",
+                    }
                 )
         return {
             "data": data,
@@ -391,9 +402,11 @@ class MacroEditorPage(BaseEditorPage):
             val_item = self.table.item(row, 1)
             key = key_item.text().lower() if key_item else ""
             val = val_item.text().lower() if val_item else ""
-            
+
             # Show row if either key or value matches search text
-            self.table.setRowHidden(row, search_text not in key and search_text not in val)
+            self.table.setRowHidden(
+                row, search_text not in key and search_text not in val
+            )
 
     def on_add(self):
         key = self.input_key.text().strip()
@@ -411,11 +424,13 @@ class MacroEditorPage(BaseEditorPage):
         key = self.input_key.text().strip()
         val = self.input_val.text().strip()
         is_invalid = self._is_invalid_macro(key)
-        
+
         # Validation feedback for input field
         if is_invalid:
             self.input_key.setStyleSheet("color: red;")
-            self.input_key.setToolTip(_("Macro keys cannot contain spaces or special characters."))
+            self.input_key.setToolTip(
+                _("Macro keys cannot contain spaces or special characters.")
+            )
         else:
             self.input_key.setStyleSheet("")
             self.input_key.setToolTip("")
