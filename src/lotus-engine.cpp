@@ -607,8 +607,8 @@ namespace fcitx {
 
         if (!keyEvent.isRelease() && !config_.cycleModeKey->empty() && keyEvent.key().checkKeyList(*config_.cycleModeKey)) {
             LOTUS_INFO("Cycle mode key pressed");
-            std::string appName  = getProgramName(ic);
-            LotusMode   realMode = getAppRule(appName);
+            std::string                               appName  = getProgramName(ic);
+            LotusMode                                 realMode = getAppRule(appName);
 
             auto                                      order      = stringutils::split(*config_.modeOrder, ",");
             std::vector<std::pair<std::string, bool>> visibility = {{"Smooth", *config_.showModeSmooth},
