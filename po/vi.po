@@ -802,3 +802,97 @@ msgstr "Cài đặt Fcitx5 Lotus"
 #: settings-gui/org.fcitx.Fcitx5.Addon.Lotus.Settings.desktop.in:3
 msgid "Configure Fcitx5 Lotus Input Method"
 msgstr "Tuỳ chỉnh bộ gõ Fcitx5 Lotus"
+
+msgid "Shortcut for Uinput (Smooth)"
+msgstr "Phím tắt cho Uinput (Mượt)"
+
+msgid "Shortcut for Uinput (Slow)"
+msgstr "Phím tắt cho Uinput (Chậm)"
+
+msgid "Shortcut for Uinput (Super Smooth)"
+msgstr "Phím tắt cho Uinput (Siêu mượt)"
+
+msgid "Shortcut for Minecraft"
+msgstr "Phím tắt cho Minecraft"
+
+msgid "Shortcut for Surrounding Text"
+msgstr "Phím tắt cho Văn bản xung quanh"
+
+msgid "Shortcut for Preedit"
+msgstr "Phím tắt cho Gạch chân"
+
+msgid "Shortcut for Emoji Picker"
+msgstr "Phím tắt cho Chọn Emoji"
+
+msgid "Shortcut for OFF"
+msgstr "Phím tắt cho Tắt"
+
+msgid "Shortcut for Default Typing"
+msgstr "Phím tắt cho Chế độ gõ mặc định"
+
+msgid "MAIN SHORTCUTS"
+msgstr "PHÍM TẮT CHÍNH"
+
+msgid "MODE SWITCHING"
+msgstr "CHUYỂN CHẾ ĐỘ GÕ"
+
+msgid "Shortcuts"
+msgstr "Phím tắt"
+
+msgid "Cannot Save"
+msgstr "Không thể lưu"
+
+msgid "Duplicate mode shortcut: {shortcut} is used by {modes}."
+msgstr "Phím chuyển chế độ bị trùng: {shortcut} đang được dùng bởi {modes}."
+
+msgid "Duplicate shortcut: {shortcut}"
+msgstr "Phím tắt bị trùng: {shortcut}"
+
+msgid "[ Press Key... ]"
+msgstr "[ Nhấn phím... ]"
+
+msgid "Configure basic input method settings and behaviors."
+msgstr "Thiết lập các cài đặt và hành vi cơ bản của bộ gõ."
+
+msgid "Customize the look and feel of the Lotus status icons and theme."
+msgstr "Tùy chỉnh giao diện, biểu tượng trạng thái và chủ đề của Lotus."
+
+msgid "Fine-tune spelling corrections and advanced typing options."
+msgstr "Tinh chỉnh kiểm tra chính tả và các tùy chọn gõ nâng cao."
+
+msgid "Manage input mode shortcuts and their display order."
+msgstr "Quản lý phím tắt cho các chế độ gõ và thứ tự hiển thị của chúng."
+
+msgid "System-wide hotkeys for menu and mode selection."
+msgstr "Phím tắt toàn hệ thống để mở menu và chọn nhanh chế độ."
+
+msgid "Basic engine configuration and character sets."
+msgstr "Cấu hình bộ gõ cơ bản và bảng mã ký tự."
+
+msgid "Common typing behaviors and transformations."
+msgstr "Các hành vi gõ phím và chuyển đổi ký tự phổ biến."
+
+msgid "Visual appearance of the status area icons."
+msgstr "Giao diện hiển thị của các biểu tượng trên vùng trạng thái."
+
+msgid "Manage how the engine handles spelling and word restoration."
+msgstr "Quản lý cách bộ gõ xử lý chính tả và khôi phục từ."
+
+msgid "Advanced text processing and auto-correction features."
+msgstr "Các tính năng xử lý văn bản và tự động sửa lỗi nâng cao."
+
+msgid "Enable/disable input modes and assign single-key shortcuts."
+msgstr "Bật/tắt các chế độ gõ và gán phím tắt nhanh bằng một ký tự."
+
+msgid "Drag the handle on the left to reorder modes in the menu. Use checkboxes to toggle visibility, and click the buttons to reassign shortcuts."
+msgstr "Kéo thả biểu tượng bên trái để sắp xếp thứ tự chế độ trong menu. Đánh dấu để bật/tắt hiển thị, và nhấn vào các nút để gán lại phím tắt."
+
+msgid "Cycle Mode Hotkey"
+msgstr "Phím tắt chuyển nhanh chế độ"
+
+msgid "Manage input mode shortcuts, display order, and fast cycling."
+msgstr "Quản lý phím tắt, thứ tự hiển thị và chuyển nhanh các chế độ gõ."
+
+msgid "Assign hotkeys to open the mode menu or quickly cycle through enabled modes."
+msgstr "Gán phím tắt để mở menu chế độ hoặc chuyển nhanh giữa các chế độ đang bật."
+
