@@ -26,7 +26,7 @@
 #include <fcitx/addonmanager.h>
 #include <fcitx/inputmethodengine.h>
 #include <fcitx/instance.h>
-#include <fcitx-utils/eventloopinterface.h>
+#include <fcitx-utils/event.h>
 
 namespace fcitx {
 
