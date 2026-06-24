@@ -17,7 +17,7 @@ jobs:
         run: |
           pacman -Syu --noconfirm git clang diffutils
           git config --global --add safe.directory $GITHUB_WORKSPACE
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: fcitx/github-actions@clang-format
   check:
     name: Build and test
@@ -44,7 +44,7 @@ jobs:
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git config --global --add safe.directory "$GITHUB_WORKSPACE/fcitx5-lotus"
           git config --global --add safe.directory "$GITHUB_WORKSPACE/fcitx5"
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           repository: fcitx/fcitx5
           path: fcitx5
@@ -62,7 +62,7 @@ jobs:
           cmake-option: >-
             -DENABLE_KEYBOARD=Off -DENABLE_X11=Off -DENABLE_WAYLAND=Off -DENABLE_ENCHANT=Off
             -DENABLE_DBUS=Off -DENABLE_SERVER=Off -DUSE_SYSTEMD=Off -DENABLE_EMOJI=On
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           path: fcitx5-lotus
           submodules: true
