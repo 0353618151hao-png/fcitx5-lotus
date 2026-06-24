@@ -74,6 +74,10 @@ class LotusSettingsWindow(QMainWindow):
                 font-weight: bold;
                 font-family: monospace;
             }
+            QLabel#ShortcutWarning {
+                color: palette(link-visited);
+                font-size: 12px;
+            }
         """)
 
     def _setup_ui(self):
@@ -195,6 +199,11 @@ class LotusSettingsWindow(QMainWindow):
             KeymapEditorPage(self.dbus_handler),
         )
         self._add_page(
+            _("Shortcuts"),
+            "preferences-desktop-keyboard-shortcuts",
+            DynamicSettingsPage(self.dbus_handler, category=SettingsCategory.SHORTCUTS),
+        )
+        self._add_page(
             _("Appearance"),
             "preferences-desktop-theme",
             DynamicSettingsPage(
@@ -239,16 +248,46 @@ class LotusSettingsWindow(QMainWindow):
             and self.content_stack.widget(i).is_modified()
             for i in range(self.content_stack.count())
         )
-        self.btn_apply.setEnabled(any_modified)
+        has_errors = self.has_validation_errors()
+        self.btn_apply.setEnabled(any_modified and not has_errors)
         self.btn_cancel.setEnabled(any_modified)
+        self.btn_ok.setEnabled(not has_errors)
         self.update_reset_button_state()
+
+    def has_validation_errors(self):
+        return any(
+            hasattr(self.content_stack.widget(i), "has_validation_errors")
+            and self.content_stack.widget(i).has_validation_errors()
+            for i in range(self.content_stack.count())
+        )
+
+    def validation_message(self):
+        messages = []
+        for i in range(self.content_stack.count()):
+            page = self.content_stack.widget(i)
+            if hasattr(page, "validation_message"):
+                message = page.validation_message()
+                if message:
+                    messages.append(message)
+        return "\n".join(messages)
 
     def on_save_all(self, quiet=False):
         """Triggers save on all pages that support it."""
+        if self.has_validation_errors():
+            from qtpy.QtWidgets import QMessageBox
+
+            QMessageBox.warning(
+                self,
+                _("Cannot Save"),
+                self.validation_message(),
+            )
+            return False
+
         for i in range(self.content_stack.count()):
             page = self.content_stack.widget(i)
             if hasattr(page, "save_data"):
-                page.save_data()
+                if page.save_data() is False:
+                    return False
 
         self.btn_apply.setEnabled(False)
         self.btn_cancel.setEnabled(False)
@@ -259,10 +298,11 @@ class LotusSettingsWindow(QMainWindow):
             QMessageBox.information(
                 self, _("Success"), _("Settings saved.")
             )
+        return True
 
     def on_ok(self):
-        self.on_save_all(quiet=True)
-        self.close()
+        if self.on_save_all(quiet=True):
+            self.close()
 
     def on_cancel(self):
         """Discards all unsaved changes by reloading data on all pages."""
@@ -275,6 +315,7 @@ class LotusSettingsWindow(QMainWindow):
 
         self.btn_apply.setEnabled(False)
         self.btn_cancel.setEnabled(False)
+        self.btn_ok.setEnabled(not self.has_validation_errors())
         self.update_reset_button_state()
 
     def _on_sidebar_changed(self, index):

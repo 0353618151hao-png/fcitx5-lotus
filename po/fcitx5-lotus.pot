@@ -780,3 +780,48 @@ msgstr ""
 #: settings-gui/org.fcitx.Fcitx5.Addon.Lotus.Settings.desktop.in:3
 msgid "Configure Fcitx5 Lotus Input Method"
 msgstr ""
+
+msgid "Shortcut for Uinput (Smooth)"
+msgstr ""
+
+msgid "Shortcut for Uinput (Slow)"
+msgstr ""
+
+msgid "Shortcut for Uinput (Super Smooth)"
+msgstr ""
+
+msgid "Shortcut for Minecraft"
+msgstr ""
+
+msgid "Shortcut for Surrounding Text"
+msgstr ""
+
+msgid "Shortcut for Preedit"
+msgstr ""
+
+msgid "Shortcut for Emoji Picker"
+msgstr ""
+
+msgid "Shortcut for OFF"
+msgstr ""
+
+msgid "Shortcut for Default Typing"
+msgstr ""
+
+msgid "MAIN SHORTCUTS"
+msgstr ""
+
+msgid "MODE SWITCHING"
+msgstr ""
+
+msgid "Shortcuts"
+msgstr ""
+
+msgid "Cannot Save"
+msgstr ""
+
+msgid "Duplicate mode shortcut: {shortcut} is used by {modes}."
+msgstr ""
+
+msgid "Duplicate shortcut: {shortcut}"
+msgstr ""

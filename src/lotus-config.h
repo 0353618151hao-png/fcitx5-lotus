@@ -211,32 +211,45 @@ namespace fcitx {
         OptionWithAnnotation<std::string, StringListAnnotation> outputCharset{this, "OutputCharset", _("Output Charset"), "Unicode", {}, {}, StringListAnnotation()};
         KeyListOption                                           modeMenuKey{
             this, "ModeMenuKey", _("Mode Menu Hotkey"), {Key("grave")}, KeyListConstrain({KeyConstrainFlag::AllowModifierLess, KeyConstrainFlag::AllowModifierOnly})};
+        KeyListOption cycleModeKey{this, "CycleModeKey", _("Cycle Mode Hotkey"), {}, KeyListConstrain({KeyConstrainFlag::AllowModifierLess, KeyConstrainFlag::AllowModifierOnly})};
         SubConfigOption                                                                appRules{this, "AppRules", _("App Rules"), "fcitx://config/addon/lotus/app_rules"};
         OptionWithAnnotation<W2UMode, W2UModeI18NAnnotation>                           w2u{this, "W2U", _("Type w to Produce ư"), W2UMode::NonStart};
         OptionWithAnnotation<BracketTransformMode, BracketTransformModeI18NAnnotation> bracketTransform{this, "BracketTransform", _("Type [ -> ơ, ] -> ư, { -> Ơ, } -> Ư"),
                                                                                                         BracketTransformMode::Disabled};
 
         Option<bool> spellCheck{this, "SpellCheck", _("Enable Spell Check"), true}; Option<bool> enableMacro{this, "EnableMacro", _("Enable Macro"), true};
-        Option<bool> capitalizeMacro{this, "CapitalizeMacro", _("Capitalize Macro"), true}; Option<bool> autoCapitalizeAfterPunctuation{
-            this, "AutoCapitalizeAfterPunctuation", _("Auto capitalize after sentence-ending punctuation (. ! ? Enter) (experimental)"), false};
-        Option<bool> doubleSpaceToPeriod{this, "DoubleSpaceToPeriod", _("Double Space to Period (experimental)"), false};
-        Option<bool> doubleHyphenToEmDash{this, "DoubleHyphenToEmDash", _("Double Hyphen to Em-Dash (--)"), false};
-        Option<bool> autoNonVnRestore{this, "AutoNonVnRestore", _("Auto Restore Invalid Words"), true};
-        Option<bool> modernStyle{this, "ModernStyle", _("Use oà, uý (Instead Of òa, úy)"), true};
-        Option<bool> freeMarking{this, "FreeMarking", _("Allow Type With More Freedom"), true};
-        Option<bool> ddFreeStyle{this, "DdFreeStyle", _("Allow dd To Produce đ When Auto Restore Invalid Words Is On"), true};
-        Option<bool> fixUinputWithAck{this, "FixUinputWithAck", _("Fix Uinput Mode With Ack"), false};
-        Option<bool> useLotusIcons{this, "UseLotusIcons", _("Use Lotus Status Icons"), false};
+        Option<bool>                                                                             capitalizeMacro{this, "CapitalizeMacro", _("Capitalize Macro"), true};
+        Option<bool>        autoCapitalizeAfterPunctuation{this, "AutoCapitalizeAfterPunctuation", _("Auto capitalize after sentence-ending punctuation (. ! ? Enter)"), false};
+        Option<bool>        doubleSpaceToPeriod{this, "DoubleSpaceToPeriod", _("Double Space to Period"), false};
+        Option<bool>        doubleHyphenToEmDash{this, "DoubleHyphenToEmDash", _("Double Hyphen to Em-Dash (--)"), false};
+        Option<bool>        autoNonVnRestore{this, "AutoNonVnRestore", _("Auto Restore Invalid Words"), true};
+        Option<bool>        modernStyle{this, "ModernStyle", _("Use oà, uý (Instead Of òa, úy)"), true};
+        Option<bool>        freeMarking{this, "FreeMarking", _("Allow Type With More Freedom"), true};
+        Option<bool>        ddFreeStyle{this, "DdFreeStyle", _("Allow dd To Produce đ When Auto Restore Invalid Words Is On"), true};
+        Option<bool>        fixUinputWithAck{this, "FixUinputWithAck", _("Fix Uinput Mode With Ack"), false};
+        Option<bool>        useLotusIcons{this, "UseLotusIcons", _("Use Lotus Status Icons"), false};
 
-        Option<bool> enableDictionary{this, "EnableDictionary", _("Custom Dictionary"), false};
-        Option<bool> enableCustomKeymap{this, "EnableCustomKeymap", _("Custom Keymap"), false};
+        Option<bool>        enableDictionary{this, "EnableDictionary", _("Custom Dictionary"), false};
+        Option<bool>        enableCustomKeymap{this, "EnableCustomKeymap", _("Custom Keymap"), false};
 
-        Option<bool> showModeSmooth{this, "ShowModeSmooth", _("Show Uinput (Smooth)"), true}; Option<bool> showModeUinput{this, "ShowModeUinput", _("Show Uinput (Slow)"), true};
-        Option<bool> showModeSuperSmooth{this, "ShowModeSuperSmooth", _("Show Uinput (Super Smooth)"), true};
-        Option<bool> showModeMinecraft{this, "ShowModeMinecraft", _("Show Minecraft"), true};
-        Option<bool> showModeSurroundingText{this, "ShowModeSurroundingText", _("Show Surrounding Text"), true};
-        Option<bool> showModePreedit{this, "ShowModePreedit", _("Show Preedit"), true}; Option<bool> showModeEmoji{this, "ShowModeEmoji", _("Show Emoji Picker"), true};
-        Option<bool> showModeOff{this, "ShowModeOff", _("Show OFF"), true}; Option<bool> showModeDefault{this, "ShowModeDefault", _("Show Default Typing"), true};
+        Option<bool>        showModeSmooth{this, "ShowModeSmooth", _("Show Uinput (Smooth)"), true};
+        Option<std::string> shortcutSmooth{this, "ShortcutSmooth", _("Shortcut for Uinput (Smooth)"), "1"};
+        Option<bool>        showModeUinput{this, "ShowModeUinput", _("Show Uinput (Slow)"), true};
+        Option<std::string> shortcutUinput{this, "ShortcutUinput", _("Shortcut for Uinput (Slow)"), "2"};
+        Option<bool>        showModeSuperSmooth{this, "ShowModeSuperSmooth", _("Show Uinput (Super Smooth)"), true};
+        Option<std::string> shortcutSuperSmooth{this, "ShortcutSuperSmooth", _("Shortcut for Uinput (Super Smooth)"), "a"};
+        Option<bool>        showModeMinecraft{this, "ShowModeMinecraft", _("Show Minecraft"), true};
+        Option<std::string> shortcutMinecraft{this, "ShortcutMinecraft", _("Shortcut for Minecraft"), "3"};
+        Option<bool>        showModeSurroundingText{this, "ShowModeSurroundingText", _("Show Surrounding Text"), true};
+        Option<std::string> shortcutSurroundingText{this, "ShortcutSurroundingText", _("Shortcut for Surrounding Text"), "4"};
+        Option<bool>        showModePreedit{this, "ShowModePreedit", _("Show Preedit"), true};
+        Option<std::string> shortcutPreedit{this, "ShortcutPreedit", _("Shortcut for Preedit"), "q"};
+        Option<bool>        showModeEmoji{this, "ShowModeEmoji", _("Show Emoji Picker"), true};
+        Option<std::string> shortcutEmoji{this, "ShortcutEmoji", _("Shortcut for Emoji Picker"), "w"}; Option<bool> showModeOff{this, "ShowModeOff", _("Show OFF"), true};
+        Option<std::string> shortcutOff{this, "ShortcutOff", _("Shortcut for OFF"), "e"}; Option<bool> showModeDefault{this, "ShowModeDefault", _("Show Default Typing"), true};
+        Option<std::string> shortcutDefault{this, "ShortcutDefault", _("Shortcut for Default Typing"), "r"};
+
+        Option<std::string> modeOrder{this, "ModeOrder", _("Mode Order"), "Smooth,Uinput,Minecraft,SurroundingText,Preedit,Emoji,Off,SuperSmooth,Default"};
 
         OptionWithAnnotation<std::string, TimeFormatAnnotation>  timeFormat{this, "TimeFormat", _("Time Format ($TIME in macro)"), "%H:%M", {}, {}, TimeFormatAnnotation()};
         OptionWithAnnotation<std::string, DateFormatAnnotation>  dateFormat{this, "DateFormat", _("Date Format ($DATE in macro)"), "%d/%m/%Y", {}, {}, DateFormatAnnotation()};
