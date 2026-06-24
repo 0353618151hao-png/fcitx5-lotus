@@ -373,3 +373,56 @@ class HotkeyCaptureWidget(QPushButton):
             if val in self.record_mods:
                 self.record_mods.remove(val)
                 self._update_display()
+
+
+class SingleKeyCaptureWidget(HotkeyCaptureWidget):
+    """A version of HotkeyCaptureWidget that only captures a single key (no modifiers)."""
+
+    def _update_display(self):
+        self._clear_layout()
+        
+        if self.isChecked():
+            lbl = QLabel(_("[ Press Key... ]"))
+            lbl.setStyleSheet("color: palette(highlight); font-weight: bold;")
+            self.main_layout.addWidget(lbl)
+        elif not self.current_key:
+            lbl = QLabel(_("None"))
+            lbl.setStyleSheet("color: palette(mid);")
+            self.main_layout.addWidget(lbl)
+        else:
+            # For single key, we just show it directly or via map
+            display_text = HOTKEY_SYM_MAP.get(self.current_key, self.current_key.capitalize())
+            cap = KeyCap(display_text)
+            self.main_layout.addWidget(cap)
+
+    def _handle_key_event(self, event):
+        key_code = event.key()
+
+        # Escape cancels
+        if key_code == Qt.Key_Escape:
+            self.setChecked(False)
+            return
+
+        # Ignore standalone modifier keys
+        if key_code in (Qt.Key_Control, Qt.Key_Shift, Qt.Key_Alt, Qt.Key_Meta):
+            return
+
+        if key_code == Qt.Key_unknown:
+            return
+
+        # Capture base key only
+        keysym = event.nativeVirtualKey()
+        base_key = ""
+
+        if libxkb and keysym > 0:
+            buf = ctypes.create_string_buffer(64)
+            if libxkb.xkb_keysym_get_name(keysym, buf, 64) > 0:
+                base_key = buf.value.decode("utf-8")
+
+        if not base_key:
+            base_key = event.text() if event.text() and event.text().isprintable() else QKeySequence(key_code).toString()
+
+        if base_key:
+            self.current_key = base_key
+            self.setChecked(False)
+            self.textChanged.emit(self.current_key)
