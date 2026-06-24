@@ -668,14 +668,16 @@ namespace fcitx {
 
             if (!enabledModes.empty()) {
                 size_t currentIdx = 0;
+                bool   found      = false;
                 for (size_t i = 0; i < enabledModes.size(); ++i) {
                     if (enabledModes[i] == realMode) {
                         currentIdx = i;
+                        found      = true;
                         break;
                     }
                 }
 
-                LotusMode nextMode = enabledModes[(currentIdx + 1) % enabledModes.size()];
+                LotusMode nextMode = found ? enabledModes[(currentIdx + 1) % enabledModes.size()] : enabledModes[0];
                 setMode(nextMode, ic);
                 setAppRule(appName, nextMode);
                 showCycleModeNotification(nextMode, ic);

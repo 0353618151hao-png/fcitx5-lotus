@@ -535,7 +535,7 @@ class DynamicSettingsPage(QWidget):
 
         self.list_widgets.append(list_widget)
         list_widget.model().rowsMoved.connect(
-            lambda: self._update_mode_order(list_widget)
+            lambda *args: self._update_mode_order(list_widget)
         )
 
         card.content_layout.addWidget(list_widget)
@@ -563,11 +563,20 @@ class DynamicSettingsPage(QWidget):
         # Only check enabled modes
         enabled_shortcuts = {}
         for shortcut_key, visibility_key in MODE_SHORTCUT_TO_VISIBILITY.items():
+            default_visibility = "True"
+            vis_meta = self.all_metadata.get(visibility_key) if hasattr(self, "all_metadata") else None
+            if vis_meta:
+                default_visibility = vis_meta[3]
+
             is_enabled = (
-                str(self.current_values.get(visibility_key, "True")).lower() == "true"
+                str(self.current_values.get(visibility_key, default_visibility)).lower() == "true"
             )
             if is_enabled:
-                val = self.current_values.get(shortcut_key, "")
+                default_shortcut = ""
+                shortcut_meta = self.all_metadata.get(shortcut_key) if hasattr(self, "all_metadata") else None
+                if shortcut_meta:
+                    default_shortcut = shortcut_meta[3]
+                val = self.current_values.get(shortcut_key, default_shortcut)
                 if val:
                     if val in enabled_shortcuts:
                         enabled_shortcuts[val].append(shortcut_key)
