@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(fcitx5-lotus VERSION 3.2.4)
+project(fcitx5-lotus VERSION 3.3.0)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(REQUIRED_FCITX_VERSION 5.0.5)
+set(REQUIRED_FCITX_VERSION 5.0.14)
 find_package(ECM 1.0.0 REQUIRED)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 include(FeatureSummary)
