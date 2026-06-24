@@ -631,7 +631,7 @@ namespace fcitx {
                     }
                 }
                 if (visible) {
-                    LotusMode mode;
+                    std::optional<LotusMode> mode = std::nullopt;
                     if (name == "Smooth")
                         mode = LotusMode::Smooth;
                     else if (name == "Uinput")
@@ -661,7 +661,7 @@ namespace fcitx {
                         }
                     }
                     if (!duplicate) {
-                        enabledModes.push_back(mode);
+                        enabledModes.push_back(mode.value());
                     }
                 }
             }
@@ -1042,7 +1042,7 @@ namespace fcitx {
         candidateList->setLayoutHint(CandidateLayoutHint::Vertical);
         candidateList->setPageSize(1);
 
-        auto cleanup = [this](InputContext* ic) {
+        auto cleanup = [](InputContext* ic) {
             ic->inputPanel().reset();
             ic->updateUserInterface(UserInterfaceComponent::InputPanel);
         };
@@ -1061,7 +1061,7 @@ namespace fcitx {
             default: modeLabel = _("Unknown Mode"); break;
         }
 
-        auto setCurrentMode = [this, cleanup](LotusMode m) { return [this, m, cleanup](InputContext* ic) { cleanup(ic); }; };
+        auto setCurrentMode = [cleanup](LotusMode) { return [cleanup](InputContext* ic) { cleanup(ic); }; };
 
         candidateList->append(std::make_unique<AppModeCandidateWord>(Text("✓ " + modeLabel), setCurrentMode(mode)));
 
