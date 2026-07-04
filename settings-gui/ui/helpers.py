@@ -28,7 +28,7 @@ HELPERS = {
         "Automatically revert the typed sequence if the resulting word is not in the dictionary.\n"
         "This helps prevent accidental Vietnamese transformations on English words or mixed text."
     ),
-    "EnableMacroInOffMode": _(
+    "EnableMacroInOffMode": N_(
         "Allow macros to work when the input mode is OFF.\n"
         "When disabled, macros are only available in active typing modes."
     ),

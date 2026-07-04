@@ -1093,6 +1093,9 @@ namespace fcitx {
     void LotusEngine::setMode(LotusMode mode, InputContext* ic) {
         realMode = mode;
         if (ic != nullptr) {
+            if (auto* state = ic->propertyFor(&factory_)) {
+                state->clearAllBuffers();
+            }
             ic->updateUserInterface(UserInterfaceComponent::StatusArea);
         }
     }

@@ -1141,6 +1141,8 @@ namespace fcitx {
                 }
             }
             ResetEngine(lotusEngine_.handle());
+            oldPreBuffer_.clear();
+            hasHistory_ = false;
         }
         if (getFrontendName(ic_) != "dbus")
             clearAllBuffers();
