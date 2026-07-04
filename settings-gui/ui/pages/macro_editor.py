@@ -85,8 +85,6 @@ class MacroEditorPage(BaseEditorPage):
         self.search_input.setClearButtonEnabled(True)
         self.search_input.setFixedWidth(200)
         self.search_input.textChanged.connect(self.on_search_changed)
-        toggles_layout.addWidget(QLabel(_("Search:")))
-        toggles_layout.addWidget(self.search_input)
 
         toggles_card.content_layout.addLayout(toggles_layout)
         main_layout.addWidget(toggles_card)
@@ -221,6 +219,8 @@ class MacroEditorPage(BaseEditorPage):
         toolbar_layout.addWidget(self.btn_up)
         toolbar_layout.addWidget(self.btn_down)
         toolbar_layout.addStretch()
+        toolbar_layout.addWidget(QLabel(_("Search:")))
+        toolbar_layout.addWidget(self.search_input)
 
         content_layout.addLayout(toolbar_layout)
         self.update_button_states()
