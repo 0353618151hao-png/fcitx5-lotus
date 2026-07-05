@@ -326,7 +326,7 @@ namespace fcitx {
          * @param mode The mode to set.
          * @param ic Current input context.
          */
-        static void setMode(LotusMode mode, InputContext* ic);
+        void setMode(LotusMode mode, InputContext* ic);
 
         /**
          * @brief Get name of current program
