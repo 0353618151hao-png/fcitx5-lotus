@@ -870,18 +870,15 @@ namespace fcitx {
     }
 
     void LotusState::handleOffModeMacro(KeyEvent& keyEvent, KeySym currentSym) {
-        // 1. Special keys: Tab, arrows, Escape, modifiers, Delete → forward + reset
         if (checkForwardSpecialKey(keyEvent, currentSym)) {
             keyEvent.forward();
             return;
         }
 
-        // 2. Try to ensure uinput is available for potential replacement
         if (uinput_client_fd_ < 0) {
             connect_uinput_server();
         }
 
-        // 3. Backspace → feed to engine for shadow state tracking, then forward
         if (isBackspace(currentSym)) {
             EngineProcessKeyEvent(lotusEngine_.handle(), FcitxKey_BackSpace, 0);
             auto preeditC = UniqueCPtr<char>(EnginePullPreedit(lotusEngine_.handle()));
@@ -890,7 +887,6 @@ namespace fcitx {
             return;
         }
 
-        // 4. Return/Enter → forward, clear shadow state
         if (currentSym == FcitxKey_Return) {
             if (!oldPreBuffer_.empty()) {
                 ResetEngine(lotusEngine_.handle());
@@ -900,19 +896,16 @@ namespace fcitx {
             return;
         }
 
-        // 5. Get UTF-8 representation of the trigger key
         std::string keyUtf8 = Key::keySymToUTF8(currentSym);
 
-        // 6. Process key through Go engine (shadow processing)
-        bool processed = EngineProcessKeyEvent(lotusEngine_.handle(), currentSym, keyEvent.rawKey().states()) != 0U;
+        bool        processed = EngineProcessKeyEvent(lotusEngine_.handle(), currentSym, keyEvent.rawKey().states()) != 0U;
 
-        // 7. Check for engine commit
-        auto commitPtr = UniqueCPtr<char>(EnginePullCommit(lotusEngine_.handle()));
+        auto        commitPtr = UniqueCPtr<char>(EnginePullCommit(lotusEngine_.handle()));
         if (processed && commitPtr && (*commitPtr.get() != 0)) {
             std::string commitStr = commitPtr.get();
 
             // Determine if this is a macro expansion or just confirmed typed text
-            bool isMacroExpansion;
+            bool isMacroExpansion = false;
             if (keyUtf8.empty()) {
                 isMacroExpansion = (commitStr != oldPreBuffer_);
             } else {
