@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-24 09:17+0700\n"
+"POT-Creation-Date: 2026-07-05 17:36+0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,39 +17,35 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/lotus-state.cpp:235
-msgid "Page "
-msgstr ""
-
-#: src/lotus-config.h:40 src/lotus-engine.cpp:950 src/lotus-engine.cpp:1059
+#: src/lotus-config.h:40 src/lotus-engine.cpp:952 src/lotus-engine.cpp:1061
 msgid "OFF"
 msgstr ""
 
-#: src/lotus-config.h:40 src/lotus-engine.cpp:944 src/lotus-engine.cpp:1053
+#: src/lotus-config.h:40 src/lotus-engine.cpp:946 src/lotus-engine.cpp:1055
 msgid "Uinput (Smooth)"
 msgstr ""
 
-#: src/lotus-config.h:40 src/lotus-engine.cpp:951 src/lotus-engine.cpp:1060
+#: src/lotus-config.h:40 src/lotus-engine.cpp:953 src/lotus-engine.cpp:1062
 msgid "Uinput (Super Smooth)"
 msgstr ""
 
-#: src/lotus-config.h:40 src/lotus-engine.cpp:945 src/lotus-engine.cpp:1054
+#: src/lotus-config.h:40 src/lotus-engine.cpp:947 src/lotus-engine.cpp:1056
 msgid "Uinput (Slow)"
 msgstr ""
 
-#: src/lotus-config.h:40 src/lotus-engine.cpp:947 src/lotus-engine.cpp:1056
+#: src/lotus-config.h:40 src/lotus-engine.cpp:949 src/lotus-engine.cpp:1058
 msgid "Surrounding Text"
 msgstr ""
 
-#: src/lotus-config.h:40 src/lotus-engine.cpp:948 src/lotus-engine.cpp:1057
+#: src/lotus-config.h:40 src/lotus-engine.cpp:950 src/lotus-engine.cpp:1059
 msgid "Preedit"
 msgstr ""
 
-#: src/lotus-config.h:41 src/lotus-engine.cpp:949 src/lotus-engine.cpp:1058
+#: src/lotus-config.h:41 src/lotus-engine.cpp:951 src/lotus-engine.cpp:1060
 msgid "Emoji Picker"
 msgstr ""
 
-#: src/lotus-config.h:41 src/lotus-engine.cpp:946 src/lotus-engine.cpp:1055
+#: src/lotus-config.h:41 src/lotus-engine.cpp:948 src/lotus-engine.cpp:1057
 msgid "Minecraft"
 msgstr ""
 
@@ -85,12 +81,12 @@ msgstr ""
 msgid "Value"
 msgstr ""
 
-#: src/lotus-config.h:191 src/lotus-config.h:257 src/lotus-engine.cpp:200
+#: src/lotus-config.h:191 src/lotus-config.h:258 src/lotus-engine.cpp:200
 #: src/lotus-engine.cpp:345
 msgid "Macro"
 msgstr ""
 
-#: src/lotus-config.h:195 src/lotus-config.h:233 src/lotus-config.h:258
+#: src/lotus-config.h:195 src/lotus-config.h:233 src/lotus-config.h:259
 msgid "Custom Keymap"
 msgstr ""
 
@@ -258,19 +254,23 @@ msgstr ""
 msgid "Shortcut for Default Typing"
 msgstr ""
 
-#: src/lotus-config.h:252
+#: src/lotus-config.h:251
+msgid "Allow Macro in Off Mode"
+msgstr ""
+
+#: src/lotus-config.h:253
 msgid "Mode Order"
 msgstr ""
 
-#: src/lotus-config.h:254
+#: src/lotus-config.h:255
 msgid "Time Format ($TIME in macro)"
 msgstr ""
 
-#: src/lotus-config.h:255
+#: src/lotus-config.h:256
 msgid "Date Format ($DATE in macro)"
 msgstr ""
 
-#: src/lotus-config.h:259
+#: src/lotus-config.h:260
 msgid "Icon Color"
 msgstr ""
 
@@ -290,24 +290,28 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: src/lotus-engine.cpp:952 src/lotus-engine.cpp:997
+#: src/lotus-engine.cpp:954 src/lotus-engine.cpp:999
 msgid "Default Typing"
 msgstr ""
 
-#: src/lotus-engine.cpp:1019
+#: src/lotus-engine.cpp:1021
 msgid "Type"
 msgstr ""
 
-#: src/lotus-engine.cpp:1036
+#: src/lotus-engine.cpp:1038
 msgid "App: "
 msgstr ""
 
-#: src/lotus-engine.cpp:1061
+#: src/lotus-engine.cpp:1063
 msgid "Unknown Mode"
 msgstr ""
 
-#: src/lotus-engine.cpp:1123
+#: src/lotus-engine.cpp:1128
 msgid "Lotus - Off"
+msgstr ""
+
+#: src/lotus-state.cpp:235
+msgid "Page "
 msgstr ""
 
 #: org.fcitx.Fcitx5.Addon.Lotus.metainfo.xml.in.in:7
@@ -361,7 +365,7 @@ msgid "Save Debug Log"
 msgstr ""
 
 #: settings-gui/ui/pages/about.py:206 settings-gui/ui/pages/backup.py:183
-#: settings-gui/ui/pages/backup.py:296 settings-gui/ui/main_window.py:299
+#: settings-gui/ui/pages/backup.py:296 settings-gui/ui/main_window.py:300
 msgid "Success"
 msgstr ""
 
@@ -397,7 +401,7 @@ msgid "Main Settings"
 msgstr ""
 
 #: settings-gui/ui/pages/backup.py:71 settings-gui/ui/pages/backup.py:217
-#: settings-gui/ui/pages/macro_editor.py:53 settings-gui/ui/main_window.py:187
+#: settings-gui/ui/pages/macro_editor.py:53 settings-gui/ui/main_window.py:188
 msgid "Macros"
 msgstr ""
 
@@ -498,7 +502,7 @@ msgstr ""
 
 #: settings-gui/ui/pages/dict_editor.py:89
 #: settings-gui/ui/pages/keymap_editor.py:241
-#: settings-gui/ui/pages/macro_editor.py:79
+#: settings-gui/ui/pages/macro_editor.py:222
 msgid "Search:"
 msgstr ""
 
@@ -510,8 +514,8 @@ msgstr ""
 #: settings-gui/ui/pages/dict_editor.py:318
 #: settings-gui/ui/pages/keymap_editor.py:280
 #: settings-gui/ui/pages/keymap_editor.py:453
-#: settings-gui/ui/pages/macro_editor.py:171
-#: settings-gui/ui/pages/macro_editor.py:447
+#: settings-gui/ui/pages/macro_editor.py:178
+#: settings-gui/ui/pages/macro_editor.py:465
 msgid "Add"
 msgstr ""
 
@@ -522,7 +526,7 @@ msgstr ""
 #: settings-gui/ui/pages/dict_editor.py:134
 #: settings-gui/ui/pages/keymap_editor.py:308
 #: settings-gui/ui/pages/mode_manager.py:377
-#: settings-gui/ui/pages/macro_editor.py:201
+#: settings-gui/ui/pages/macro_editor.py:208
 msgid "Remove"
 msgstr ""
 
@@ -541,7 +545,7 @@ msgid "Exists"
 msgstr ""
 
 #: settings-gui/ui/pages/keymap_editor.py:221
-#: settings-gui/ui/main_window.py:197
+#: settings-gui/ui/main_window.py:198
 msgid "Keymap"
 msgstr ""
 
@@ -575,7 +579,7 @@ msgid "Remove selected row"
 msgstr ""
 
 #: settings-gui/ui/pages/keymap_editor.py:449
-#: settings-gui/ui/pages/macro_editor.py:444
+#: settings-gui/ui/pages/macro_editor.py:462
 msgid "Update"
 msgstr ""
 
@@ -629,7 +633,7 @@ msgstr ""
 msgid "No application selected"
 msgstr ""
 
-#: settings-gui/ui/pages/mode_manager.py:185 settings-gui/ui/main_window.py:152
+#: settings-gui/ui/pages/mode_manager.py:185 settings-gui/ui/main_window.py:153
 msgid "&Cancel"
 msgstr ""
 
@@ -645,7 +649,7 @@ msgstr ""
 msgid "Search applications..."
 msgstr ""
 
-#: settings-gui/ui/pages/mode_manager.py:398 settings-gui/ui/main_window.py:182
+#: settings-gui/ui/pages/mode_manager.py:398 settings-gui/ui/main_window.py:183
 msgid "Applications"
 msgstr ""
 
@@ -700,68 +704,84 @@ msgstr ""
 msgid "No interface settings available yet."
 msgstr ""
 
-#: settings-gui/ui/pages/dynamic_settings.py:581
+#: settings-gui/ui/pages/dynamic_settings.py:590
 #, python-brace-format
 msgid "Duplicate shortcut '{}' used for multiple enabled modes."
 msgstr ""
 
-#: settings-gui/ui/pages/macro_editor.py:75
+#: settings-gui/ui/pages/macro_editor.py:62
+msgid "Macro in Off Mode"
+msgstr ""
+
+#: settings-gui/ui/pages/macro_editor.py:84
 msgid "Search macros..."
 msgstr ""
 
-#: settings-gui/ui/pages/macro_editor.py:96
+#: settings-gui/ui/pages/macro_editor.py:103
 msgid "Macros support dynamic placeholders: $TIME and $DATE."
 msgstr ""
 
-#: settings-gui/ui/pages/macro_editor.py:118
-#: settings-gui/ui/pages/macro_editor.py:141 settings-gui/ui/components.py:275
+#: settings-gui/ui/pages/macro_editor.py:125
+#: settings-gui/ui/pages/macro_editor.py:148 settings-gui/ui/components.py:275
 #: settings-gui/ui/components.py:389
 msgid "None"
 msgstr ""
 
-#: settings-gui/ui/pages/macro_editor.py:126
+#: settings-gui/ui/pages/macro_editor.py:133
 msgid "Time Format:"
 msgstr ""
 
-#: settings-gui/ui/pages/macro_editor.py:149
+#: settings-gui/ui/pages/macro_editor.py:156
 msgid "Date Format:"
 msgstr ""
 
-#: settings-gui/ui/pages/macro_editor.py:163
+#: settings-gui/ui/pages/macro_editor.py:170
 msgid "Abbreviation (e.g. kg)"
 msgstr ""
 
-#: settings-gui/ui/pages/macro_editor.py:167
+#: settings-gui/ui/pages/macro_editor.py:174
 msgid "Full text (e.g. khô gà)"
 msgstr ""
 
-#: settings-gui/ui/pages/macro_editor.py:176
+#: settings-gui/ui/pages/macro_editor.py:183
 msgid "Key:"
 msgstr ""
 
-#: settings-gui/ui/pages/macro_editor.py:178
+#: settings-gui/ui/pages/macro_editor.py:185
 msgid "Value:"
 msgstr ""
 
-#: settings-gui/ui/pages/macro_editor.py:185
+#: settings-gui/ui/pages/macro_editor.py:192
 msgid "Abbreviation"
 msgstr ""
 
-#: settings-gui/ui/pages/macro_editor.py:185
+#: settings-gui/ui/pages/macro_editor.py:192
 msgid "Expanded Text"
 msgstr ""
 
-#: settings-gui/ui/pages/macro_editor.py:203
+#: settings-gui/ui/pages/macro_editor.py:210
 msgid "Move Up"
 msgstr ""
 
-#: settings-gui/ui/pages/macro_editor.py:205
+#: settings-gui/ui/pages/macro_editor.py:212
 msgid "Move Down"
 msgstr ""
 
-#: settings-gui/ui/pages/macro_editor.py:384
-#: settings-gui/ui/pages/macro_editor.py:432
+#: settings-gui/ui/pages/macro_editor.py:402
+#: settings-gui/ui/pages/macro_editor.py:450
 msgid "Macro keys cannot contain spaces or special characters."
+msgstr ""
+
+#: settings-gui/ui/components.py:188
+msgid "Clear hotkey"
+msgstr ""
+
+#: settings-gui/ui/components.py:261
+msgid "[ Recording... ]"
+msgstr ""
+
+#: settings-gui/ui/components.py:385
+msgid "[ Press Key... ]"
 msgstr ""
 
 #: settings-gui/ui/helpers.py:15
@@ -792,75 +812,69 @@ msgid ""
 "mixed text."
 msgstr ""
 
-#: settings-gui/ui/components.py:188
-msgid "Clear hotkey"
-msgstr ""
-
-#: settings-gui/ui/components.py:261
-msgid "[ Recording... ]"
-msgstr ""
-
-#: settings-gui/ui/components.py:385
-msgid "[ Press Key... ]"
+#: settings-gui/ui/helpers.py:32
+msgid ""
+"Allow macros to work when the input mode is OFF.\n"
+"When disabled, macros are only available in active typing modes."
 msgstr ""
 
 #: settings-gui/ui/main_window.py:40
 msgid "Lotus Settings"
 msgstr ""
 
-#: settings-gui/ui/main_window.py:146
+#: settings-gui/ui/main_window.py:147
 msgid "&Reset"
 msgstr ""
 
-#: settings-gui/ui/main_window.py:157
+#: settings-gui/ui/main_window.py:158
 msgid "&Apply"
 msgstr ""
 
-#: settings-gui/ui/main_window.py:162
+#: settings-gui/ui/main_window.py:163
 msgid "&OK"
 msgstr ""
 
-#: settings-gui/ui/main_window.py:172
+#: settings-gui/ui/main_window.py:173
 msgid "General"
 msgstr ""
 
-#: settings-gui/ui/main_window.py:177
+#: settings-gui/ui/main_window.py:178
 msgid "Typing"
 msgstr ""
 
-#: settings-gui/ui/main_window.py:192
+#: settings-gui/ui/main_window.py:193
 msgid "Dictionary"
 msgstr ""
 
-#: settings-gui/ui/main_window.py:202
+#: settings-gui/ui/main_window.py:203
 msgid "Shortcuts"
 msgstr ""
 
-#: settings-gui/ui/main_window.py:207
+#: settings-gui/ui/main_window.py:208
 msgid "Appearance"
 msgstr ""
 
-#: settings-gui/ui/main_window.py:214
+#: settings-gui/ui/main_window.py:215
 msgid "Backup"
 msgstr ""
 
-#: settings-gui/ui/main_window.py:224
+#: settings-gui/ui/main_window.py:225
 msgid "About"
 msgstr ""
 
-#: settings-gui/ui/main_window.py:232
+#: settings-gui/ui/main_window.py:233
 msgid "Confirm Reset"
 msgstr ""
 
-#: settings-gui/ui/main_window.py:233
+#: settings-gui/ui/main_window.py:234
 msgid "Restore all settings to defaults?"
 msgstr ""
 
-#: settings-gui/ui/main_window.py:281
+#: settings-gui/ui/main_window.py:282
 msgid "Cannot Save"
 msgstr ""
 
-#: settings-gui/ui/main_window.py:299
+#: settings-gui/ui/main_window.py:300
 msgid "Settings saved."
 msgstr ""
 

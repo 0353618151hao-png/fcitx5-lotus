@@ -100,6 +100,7 @@ class LotusSettingsWindow(QMainWindow):
                 border: none;
                 background: transparent;
                 outline: none;
+                padding-top: 15px;
             }
             QListWidget::item {
                 padding: 10px 15px;

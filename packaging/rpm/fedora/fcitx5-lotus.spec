@@ -1,5 +1,5 @@
 Name:           fcitx5-lotus
-Version:        3.3.0
+Version:        3.4.0
 Release:        1
 Summary:        Vietnamese input method for fcitx5
 License:        GPL-3.0-or-later
@@ -166,5 +166,5 @@ fi
 %systemd_postun_with_restart fcitx5-lotus-server@.service
 
 %changelog
-* Wed Jun 24 2026 Nguyen Hoang Ky <nhktmdzhg@gmail.com> - 3.3.0-1
-- New: change the order of modes in the mode menu and change the shortcut key for each mode in mode menu
+* Wed Jul 08 2026 Nguyen Hoang Ky <nhktmdzhg@gmail.com> - 3.4.0-1
+- Allow macro in off mode

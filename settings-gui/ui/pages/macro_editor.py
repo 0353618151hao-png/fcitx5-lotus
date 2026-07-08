@@ -59,8 +59,10 @@ class MacroEditorPage(BaseEditorPage):
         toggles_layout = QHBoxLayout()
         self.cb_enable = QCheckBox(_("Enable Macro"))
         self.cb_capitalize = QCheckBox(_("Capitalize Macro"))
+        self.cb_enable_off_mode = QCheckBox(_("Macro in Off Mode"))
         self.cb_enable.toggled.connect(self._on_item_changed)
         self.cb_capitalize.toggled.connect(self._on_item_changed)
+        self.cb_enable_off_mode.toggled.connect(self._on_item_changed)
         toggles_layout.addWidget(self.cb_enable)
 
         cap_layout = QHBoxLayout()
@@ -69,6 +71,13 @@ class MacroEditorPage(BaseEditorPage):
         add_help_icon(cap_layout, "CapitalizeMacro")
 
         toggles_layout.addLayout(cap_layout)
+
+        off_mode_layout = QHBoxLayout()
+        off_mode_layout.setSpacing(5)
+        off_mode_layout.addWidget(self.cb_enable_off_mode)
+        add_help_icon(off_mode_layout, "EnableMacroInOffMode")
+        toggles_layout.addLayout(off_mode_layout)
+
         toggles_layout.addStretch()
 
         self.search_input = QLineEdit()
@@ -76,8 +85,6 @@ class MacroEditorPage(BaseEditorPage):
         self.search_input.setClearButtonEnabled(True)
         self.search_input.setFixedWidth(200)
         self.search_input.textChanged.connect(self.on_search_changed)
-        toggles_layout.addWidget(QLabel(_("Search:")))
-        toggles_layout.addWidget(self.search_input)
 
         toggles_card.content_layout.addLayout(toggles_layout)
         main_layout.addWidget(toggles_card)
@@ -212,6 +219,8 @@ class MacroEditorPage(BaseEditorPage):
         toolbar_layout.addWidget(self.btn_up)
         toolbar_layout.addWidget(self.btn_down)
         toolbar_layout.addStretch()
+        toolbar_layout.addWidget(QLabel(_("Search:")))
+        toolbar_layout.addWidget(self.search_input)
 
         content_layout.addLayout(toolbar_layout)
         self.update_button_states()
@@ -228,6 +237,9 @@ class MacroEditorPage(BaseEditorPage):
                 )
                 self.cb_capitalize.setChecked(
                     str(values.get("CapitalizeMacro", "True")).lower() == "true"
+                )
+                self.cb_enable_off_mode.setChecked(
+                    str(values.get("EnableMacroInOffMode", "False")).lower() == "true"
                 )
 
                 # Set time format (default %H:%M)
@@ -266,6 +278,7 @@ class MacroEditorPage(BaseEditorPage):
         try:
             self.cb_enable.setChecked(True)
             self.cb_capitalize.setChecked(True)
+            self.cb_enable_off_mode.setChecked(False)
             self.table.setRowCount(0)
             self._on_item_changed()
         finally:
@@ -278,6 +291,7 @@ class MacroEditorPage(BaseEditorPage):
             self.table.rowCount() > 0
             or not self.cb_enable.isChecked()
             or not self.cb_capitalize.isChecked()
+            or self.cb_enable_off_mode.isChecked()
         )
 
     def is_modified(self):
@@ -301,6 +315,7 @@ class MacroEditorPage(BaseEditorPage):
             "data": data,
             "EnableMacro": self.cb_enable.isChecked(),
             "CapitalizeMacro": self.cb_capitalize.isChecked(),
+            "EnableMacroInOffMode": self.cb_enable_off_mode.isChecked(),
             "TimeFormat": self.input_time_format.currentText(),
             "DateFormat": self.input_date_format.currentText(),
         }
@@ -313,6 +328,9 @@ class MacroEditorPage(BaseEditorPage):
             values["EnableMacro"] = "True" if self.cb_enable.isChecked() else "False"
             values["CapitalizeMacro"] = (
                 "True" if self.cb_capitalize.isChecked() else "False"
+            )
+            values["EnableMacroInOffMode"] = (
+                "True" if self.cb_enable_off_mode.isChecked() else "False"
             )
             values["TimeFormat"] = self.input_time_format.currentText()
             values["DateFormat"] = self.input_date_format.currentText()

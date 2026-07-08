@@ -205,10 +205,17 @@ namespace fcitx {
         void handleSurroundingText(KeyEvent& keyEvent, KeySym currentSym);
 
         /**
+         * @brief Handles Off mode with macro shadow processing.
+         * @param keyEvent The key event.
+         * @param currentSym Current key symbol.
+         */
+        void handleOffModeMacro(KeyEvent& keyEvent, KeySym currentSym);
+
+        /**
          * @brief Handles processing normal key events.
          * @param keyEvent The key event.
          * @param currentSym Current key symbol.
-        */
+         */
         void processNormalKey(KeyEvent& keyEvent, KeySym currentSym);
 
         /**
