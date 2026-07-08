@@ -49,7 +49,7 @@ jobs:
           repository: fcitx/fcitx5
           path: fcitx5
       - name: Cache fcitx5 data files
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: 'fcitx5/**/*.tar.*'
           key:
