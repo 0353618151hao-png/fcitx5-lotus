@@ -466,8 +466,7 @@ namespace fcitx {
 
             event.filterAndAccept(); // Filter out the final trigger backspace.
             is_deleting_.store(false);
-            if (getFrontendName(ic_) == "dbus" && !ic_->surroundingText().isValid())
-                replayBufferedKeys(); // Does we need drop this?
+            replayBufferedKeys();
             return true;
         }
         return false;
@@ -975,6 +974,9 @@ namespace fcitx {
             is_deleting_.store(false);
             current_backspace_count_ = 0;
             expected_backspaces_     = 0;
+            if (!buffered_keys_.empty()) {
+                replayBufferedKeys();
+            }
         }
         if (needEngineReset.load() && realMode != LotusMode::Off) {
             LOTUS_INFO("Need engine reset");
