@@ -70,11 +70,12 @@ Nếu bạn muốn tự biên dịch bộ gõ từ mã nguồn để đóng góp
 - **Debian/Ubuntu:** `sudo apt-get install cmake extra-cmake-modules libfcitx5core-dev libfcitx5config-dev libfcitx5utils-dev libinput-dev libudev-dev g++ golang hicolor-icon-theme pkg-config libx11-dev fcitx5-modules-dev python3-qtpy python3-dbus acl`
 - **Fedora/RHEL:** `sudo dnf install cmake extra-cmake-modules fcitx5-devel libinput-devel libudev-devel gcc-c++ golang hicolor-icon-theme systemd-devel libX11-devel python3-pyside6 python3-QtPy python3-dbus acl`
 - **openSUSE:** `sudo zypper install cmake extra-cmake-modules fcitx5-devel libinput-devel systemd-devel gcc-c++ go hicolor-icon-theme systemd-devel libX11-devel udev python3-pyside6 python3-QtPy python3-dbus-python acl`
+- **Arch:** `sudo pacman -S --needed cmake extra-cmake-modules gcc go git libx11 python make pkgconf acl fcitx5 libinput hicolor-icon-theme python-qtpy python-dbus`
 
 ### Cài đặt
 
 ```bash
-git clone https://github.com/LotusInputMethod/fcitx5-lotus.git
+git clone --recurse-submodules https://github.com/LotusInputMethod/fcitx5-lotus.git
 cd fcitx5-lotus
 cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib . #LIBDIR tuỳ vào distro
 make
