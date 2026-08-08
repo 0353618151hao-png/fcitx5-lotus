@@ -99,12 +99,14 @@ namespace fcitx {
         std::vector<EmojiEntry> emojiCandidates_;
         bool                    waitAck_ = false;
         std::vector<KeyEntry>   buffered_keys_; ///< Keystrokes buffered during replacement
-        bool                    isPrevSpace_        = false;
-        bool                    isPrevHyphen_       = false;
-        bool                    shouldCapitalize_   = false;
-        bool                    isPrevPunctuation_  = false;
-        int64_t                 lastDeactivateTime_ = 0;
-        bool                    wa_chromium_flag    = false;
+        bool                    isPrevSpace_           = false;
+        bool                    isPrevHyphen_          = false;
+        bool                    shouldCapitalize_      = false;
+        bool                    isPrevPunctuation_     = false;
+        int64_t                 lastDeactivateTime_    = 0;
+        bool                    wa_chromium_flag       = false;
+        bool                    tracking_modifier_tap_ = false; ///< Selected modifier held, waiting for consecutive keyup
+        bool                    macro_skip_            = false; ///< Macro disabled for the current word
 
         /**
          * @brief Connects to the uinput server.
@@ -226,6 +228,34 @@ namespace fcitx {
          * replacement completes.
          */
         void replayBufferedKeys();
+
+        /**
+         * @brief Checks if the key symbol matches the configured macro-skip modifier.
+         * @param sym Key symbol to check.
+         * @return True if the key is the configured trigger modifier (left/right same).
+         */
+        bool isMacroSkipModifier(KeySym sym) const;
+
+        /**
+         * @brief Tracks a modifier tap (keydown then consecutive keyup) to skip macro.
+         * @param keyEvent The modifier key event.
+         */
+        void handleModifierTap(const KeyEvent& keyEvent);
+
+        /**
+         * @brief Cancels an in-progress modifier tap when another key arrives.
+         */
+        void cancelModifierTap();
+
+        /**
+         * @brief Re-enables macro when the current word ends (engine preedit empty).
+         */
+        void reEnableMacroAfterWordEnd();
+
+        /**
+         * @brief Clears the macro-skip state and re-syncs the engine.
+         */
+        void resetMacroSkip();
     };
 
 } // namespace fcitx
