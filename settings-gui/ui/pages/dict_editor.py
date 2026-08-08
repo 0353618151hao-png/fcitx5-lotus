@@ -41,11 +41,13 @@ class DictEditorPage(BaseEditorPage):
         self.dbus = dbus_handler
         self.words = []  # List of all words
         self.initial_state = {}
+        self._is_loaded = False
         self._setup_ui()
-        self.load_data()
 
     def _get_local_dict_path(self) -> str:
-        xdg_data_home = os.environ.get("XDG_DATA_HOME", os.path.expanduser("~/.local/share"))
+        xdg_data_home = os.environ.get(
+            "XDG_DATA_HOME", os.path.expanduser("~/.local/share")
+        )
         return os.path.join(xdg_data_home, "fcitx5/lotus/vietnamese.cm.dict")
 
     def _get_global_dict_path(self) -> str:
@@ -67,8 +69,12 @@ class DictEditorPage(BaseEditorPage):
         title = QLabel(_("Custom Dictionary"))
         title.setObjectName("CategoryTitle")
         main_layout.addWidget(title)
-        
-        explanation = QLabel(_("Words in the custom dictionary will be excluded from 'Auto Restore Invalid Words'. Use this for names, technical terms, or words not yet in the built-in dictionary."))
+
+        explanation = QLabel(
+            _(
+                "Words in the custom dictionary will be excluded from 'Auto Restore Invalid Words'. Use this for names, technical terms, or words not yet in the built-in dictionary."
+            )
+        )
         explanation.setWordWrap(True)
         explanation.setStyleSheet("color: gray; font-size: 13px;")
         main_layout.addWidget(explanation)
@@ -140,6 +146,12 @@ class DictEditorPage(BaseEditorPage):
         content_layout.addLayout(toolbar_layout)
         self.update_button_states()
 
+    def showEvent(self, event):
+        super().showEvent(event)
+        if not self._is_loaded:
+            self.load_data()
+            self._is_loaded = True
+
     def load_data(self):
         self.blockSignals(True)
         try:
@@ -155,7 +167,7 @@ class DictEditorPage(BaseEditorPage):
             local_path = self._get_local_dict_path()
             global_path = self._get_global_dict_path()
             path_to_read = local_path if os.path.exists(local_path) else global_path
-            
+
             if os.path.exists(path_to_read):
                 try:
                     with open(path_to_read, "r", encoding="utf-8") as f:
@@ -176,18 +188,18 @@ class DictEditorPage(BaseEditorPage):
     def _rebuild_table(self, filtered_words: list = None):
         """Rebuilds the table based on self.words or filtered_words."""
         display_words = filtered_words if filtered_words is not None else self.words
-        
+
         num_cols = 3
         num_rows = (len(display_words) + num_cols - 1) // num_cols
         self.table.setRowCount(num_rows)
-        
+
         for i, word in enumerate(display_words):
             row = i // num_cols
             col = i % num_cols
             item = QTableWidgetItem(word)
             self.table.setItem(row, col, item)
             self._apply_cell_highlight(item, word)
-            
+
         # Clear remaining cells in the last row
         for i in range(len(display_words), num_rows * num_cols):
             row = i // num_cols
@@ -225,7 +237,9 @@ class DictEditorPage(BaseEditorPage):
         config_data = self.dbus.get_config()
         if config_data:
             values = config_data.get("values", {})
-            values["EnableDictionary"] = "True" if self.cb_enable.isChecked() else "False"
+            values["EnableDictionary"] = (
+                "True" if self.cb_enable.isChecked() else "False"
+            )
             self.dbus.set_config(values)
 
         local_path = self._get_local_dict_path()
@@ -234,7 +248,7 @@ class DictEditorPage(BaseEditorPage):
             with open(local_path, "w", encoding="utf-8") as f:
                 for word in self.words:
                     f.write(f"{word}\n")
-            
+
             # Trigger engine reload by setting global config (unchanged)
             if self.dbus.iface:
                 current_config = self.dbus.get_config()
@@ -243,7 +257,9 @@ class DictEditorPage(BaseEditorPage):
 
             self.initial_state = self._get_current_state()
         except Exception as e:
-            QMessageBox.warning(self, _("Error"), _("Failed to save dictionary: {}").format(e))
+            QMessageBox.warning(
+                self, _("Error"), _("Failed to save dictionary: {}").format(e)
+            )
 
     def upsert_row(self, word: str, sort: bool = True):
         if word in self.words:
@@ -299,10 +315,12 @@ class DictEditorPage(BaseEditorPage):
         """Handles validation and Add button state."""
         word = self.input_word.text().strip()
         is_invalid = self._is_invalid_word(word)
-        
+
         if is_invalid:
             self.input_word.setStyleSheet("color: red;")
-            self.input_word.setToolTip(_("Warning: Dictionary words should not contain spaces."))
+            self.input_word.setToolTip(
+                _("Warning: Dictionary words should not contain spaces.")
+            )
         else:
             self.input_word.setStyleSheet("")
             self.input_word.setToolTip("")
