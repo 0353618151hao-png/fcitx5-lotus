@@ -188,16 +188,10 @@ func (e *FcitxBambooEngine) getRawKeyLen() int {
 }
 
 func (e *FcitxBambooEngine) getPreeditString() string {
-	if e.macroEnabled {
-		if e.autoNonVnRestore && e.shouldFallbackToEnglish(true) {
-			return e.getProcessedString(bamboo.EnglishMode)
-		}
-		return e.getProcessedString(bamboo.PunctuationMode)
-	}
-	if e.shouldFallbackToEnglish(true) {
+	if e.autoNonVnRestore && e.shouldFallbackToEnglish(true) {
 		return e.getProcessedString(bamboo.EnglishMode)
 	}
-	return e.getProcessedString(bamboo.VietnameseMode)
+	return e.getProcessedString(bamboo.PunctuationMode)
 }
 
 func (e *FcitxBambooEngine) updateLastKeyWithShift(keyVal, state uint32) {
