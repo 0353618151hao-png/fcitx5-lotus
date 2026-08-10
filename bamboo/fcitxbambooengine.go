@@ -120,9 +120,7 @@ func (e *FcitxBambooEngine) formatTime(format string) string {
 	return now.Format(layout)
 }
 
-func (e *FcitxBambooEngine) expandMacro(str string) string {
-	var macroText = e.macroTable.GetText(str)
-
+func (e *FcitxBambooEngine) expandMacro(str, macroText string) string {
 	// Replace dynamic placeholders
 	if e.timeFormat != "" && strings.Contains(macroText, "$TIME") {
 		macroText = strings.ReplaceAll(macroText, "$TIME", e.formatTime(e.timeFormat))
@@ -146,9 +144,10 @@ func (e *FcitxBambooEngine) getMacroText() (bool, string) {
 	if !e.macroEnabled {
 		return false, ""
 	}
-	var text = e.preeditor.GetProcessedString(bamboo.PunctuationMode)
-	if e.macroTable.HasKey(text) {
-		return true, e.expandMacro(text)
+
+	var text = e.getProcessedString(bamboo.PunctuationMode)
+	if macroVal, ok := e.macroTable.Get(text); ok {
+		return true, e.expandMacro(text, macroVal)
 	}
 	return false, ""
 }
@@ -157,14 +156,18 @@ func (e *FcitxBambooEngine) shouldFallbackToEnglish(checkVnRune bool) bool {
 	if !e.autoNonVnRestore {
 		return false
 	}
-	var vnSeq = e.preeditor.GetProcessedString(bamboo.VietnameseMode | bamboo.LowerCase)
+	var vnSeq = e.getProcessedString(bamboo.VietnameseMode | bamboo.LowerCase)
 
 	if len(vnSeq) == 0 {
 		return false
 	}
-	if ok, _ := e.getMacroText(); ok {
-		return false
+	if e.macroEnabled {
+		// Use macrotable.Get instead of getMacroText to avoid unnecessary expandMacro
+		if _, ok := e.macroTable.Get(e.getProcessedString(bamboo.PunctuationMode)); ok {
+			return false
+		}
 	}
+
 	// we want to allow dd even in non-vn sequence, because dd is used a lot in abbreviation
 	if e.ddFreeStyle && !bamboo.HasAnyVietnameseVower(vnSeq) &&
 		(strings.HasSuffix(vnSeq, "d") || strings.ContainsRune(vnSeq, 'đ')) {
@@ -181,20 +184,14 @@ func (e *FcitxBambooEngine) getProcessedString(mode bamboo.Mode) string {
 }
 
 func (e *FcitxBambooEngine) getRawKeyLen() int {
-	return len(e.preeditor.GetProcessedString(bamboo.EnglishMode | bamboo.FullText))
+	return len(e.getProcessedString(bamboo.EnglishMode | bamboo.FullText))
 }
 
 func (e *FcitxBambooEngine) getPreeditString() string {
-	if e.macroEnabled {
-		if e.autoNonVnRestore && e.shouldFallbackToEnglish(true) {
-			return e.getProcessedString(bamboo.EnglishMode)
-		}
-		return e.getProcessedString(bamboo.PunctuationMode)
-	}
-	if e.shouldFallbackToEnglish(true) {
+	if e.autoNonVnRestore && e.shouldFallbackToEnglish(true) {
 		return e.getProcessedString(bamboo.EnglishMode)
 	}
-	return e.getProcessedString(bamboo.VietnameseMode)
+	return e.getProcessedString(bamboo.PunctuationMode)
 }
 
 func (e *FcitxBambooEngine) updateLastKeyWithShift(keyVal, state uint32) {
@@ -226,15 +223,23 @@ func inKeyList(list []rune, key rune) bool {
 }
 
 func (e *FcitxBambooEngine) toUpper(keyRune rune) rune {
-	var keyMapping = map[rune]rune{
-		'[': '{',
-		']': '}',
-		'{': '[',
-		'}': ']',
-	}
-
-	if upperSpecialKey, found := keyMapping[keyRune]; found && inKeyList(e.preeditor.GetInputMethod().AppendingKeys, keyRune) {
-		keyRune = upperSpecialKey
+	switch keyRune {
+	case '[':
+		if inKeyList(e.preeditor.GetInputMethod().AppendingKeys, keyRune) {
+			return '{'
+		}
+	case ']':
+		if inKeyList(e.preeditor.GetInputMethod().AppendingKeys, keyRune) {
+			return '}'
+		}
+	case '{':
+		if inKeyList(e.preeditor.GetInputMethod().AppendingKeys, keyRune) {
+			return '['
+		}
+	case '}':
+		if inKeyList(e.preeditor.GetInputMethod().AppendingKeys, keyRune) {
+			return ']'
+		}
 	}
 	return keyRune
 }
@@ -265,16 +270,15 @@ func getLastRune(s string) rune {
 	return r
 }
 
-func (e *FcitxBambooEngine) getCommitText(keyVal, state uint32) (string, bool) {
+func (e *FcitxBambooEngine) getCommitText(keyVal, state uint32, oldText string) (string, bool) {
 	var keyRune = rune(keyVal)
-	oldText := e.getPreeditString()
 	// restore key strokes by pressing Shift + Space
 	if e.shouldRestoreKeyStrokes {
 		e.shouldRestoreKeyStrokes = false
 		e.preeditor.RestoreLastWord(!bamboo.HasAnyVietnameseRune(oldText))
 		return e.getPreeditString(), false
 	}
-	if e.preeditor.CanProcessKey(keyRune) {
+	if e.preeditor.CanProcessKey(keyRune) || (e.macroEnabled && keyRune >= '0' && keyRune <= '9') {
 		if state&FcitxLockMask != 0 {
 			keyRune = e.toUpper(keyRune)
 		}
@@ -286,7 +290,7 @@ func (e *FcitxBambooEngine) getCommitText(keyVal, state uint32) (string, bool) {
 			} else {
 				newText = e.getProcessedString(bamboo.VietnameseMode)
 			}
-			if fullSeq := e.preeditor.GetProcessedString(bamboo.VietnameseMode); len(fullSeq) > 0 && getLastRune(fullSeq) == keyRune {
+			if fullSeq := e.getProcessedString(bamboo.VietnameseMode); len(fullSeq) > 0 && getLastRune(fullSeq) == keyRune {
 				// [[ => [
 				var ret = e.getPreeditString()
 				var lastRune = getLastRune(ret)
@@ -320,15 +324,15 @@ func (e *FcitxBambooEngine) getCommitText(keyVal, state uint32) (string, bool) {
 	} else if bamboo.IsWordBreakSymbol(keyRune) {
 		// macro processing
 		if e.macroEnabled {
-			var keyS = string(keyRune)
-			if e.macroTable.HasKey(oldText) {
+			// Use macrotable.Get instead of getMacroText to avoid unnecessary preeditor processing
+			if macroVal, ok := e.macroTable.Get(oldText); ok {
 				e.preeditor.Reset()
-				return e.expandMacro(oldText) + keyS, true
+				return e.expandMacro(oldText, macroVal) + string(keyRune), true
 			}
 		}
 		if bamboo.HasAnyVietnameseRune(oldText) && e.mustFallbackToEnglish() {
 			e.preeditor.RestoreLastWord(false)
-			newText := e.preeditor.GetProcessedString(bamboo.EnglishMode) + string(keyRune)
+			newText := e.getProcessedString(bamboo.EnglishMode) + string(keyRune)
 			e.preeditor.ProcessKey(keyRune, bamboo.EnglishMode)
 			return newText, true
 		}
@@ -364,21 +368,19 @@ func (e *FcitxBambooEngine) canProcessKey(keyVal uint32) bool {
 	if keyVal == FcitxSpace || keyVal == FcitxBackSpace || bamboo.IsWordBreakSymbol(keyRune) {
 		return true
 	}
-	if ok, _ := e.getMacroText(); ok && keyVal == FcitxTab {
-		return true
+	if keyVal == FcitxTab {
+		if e.macroEnabled {
+			// Use macrotable.Get instead of getMacroText to avoid unnecessary expandMacro
+			if _, ok := e.macroTable.Get(e.getProcessedString(bamboo.PunctuationMode)); ok {
+				return true
+			}
+		}
 	}
 	return e.preeditor.CanProcessKey(keyRune)
 }
 func (e *FcitxBambooEngine) isValidState(state uint32) bool {
-	if state&FcitxControlMask != 0 ||
-		state&FcitxMod1Mask != 0 ||
-		state&FcitxIgnoredMask != 0 ||
-		state&FcitxSuperMask != 0 ||
-		state&FcitxHyperMask != 0 ||
-		state&FcitxMetaMask != 0 {
-		return false
-	}
-	return true
+	const isvalidStateMask = FcitxControlMask | FcitxMod1Mask | FcitxIgnoredMask | FcitxSuperMask | FcitxHyperMask | FcitxMetaMask
+	return state&isvalidStateMask == 0
 }
 
 func (e *FcitxBambooEngine) getComposedString(oldText string) string {
@@ -391,7 +393,6 @@ func (e *FcitxBambooEngine) getComposedString(oldText string) string {
 func (e *FcitxBambooEngine) preeditProcessKeyEvent(keyVal uint32, state uint32) bool {
 	var rawKeyLen = e.getRawKeyLen()
 	var keyRune = rune(keyVal)
-	var oldText = e.getPreeditString()
 	defer e.updateLastKeyWithShift(keyVal, state)
 
 	// workaround for chrome's address bar and Google SpreadSheets
@@ -404,6 +405,8 @@ func (e *FcitxBambooEngine) preeditProcessKeyEvent(keyVal uint32, state uint32) 
 			return false
 		}
 	}
+
+	var oldText = e.getPreeditString()
 
 	if keyVal == FcitxBackSpace {
 		if e.runeCount() == 1 {
@@ -428,7 +431,7 @@ func (e *FcitxBambooEngine) preeditProcessKeyEvent(keyVal uint32, state uint32) 
 		return true
 	}
 
-	newText, isWordBreakRune := e.getCommitText(keyVal, state)
+	newText, isWordBreakRune := e.getCommitText(keyVal, state, oldText)
 	if isWordBreakRune {
 		e.commitPreeditAndReset(newText)
 		return true

@@ -35,9 +35,9 @@ import (
 )
 import (
 	"bufio"
+	"bytes"
 	"os"
 	"sort"
-	"strings"
 )
 
 //export Init
@@ -333,8 +333,7 @@ func NewDictionary(fd uintptr) uintptr {
 		if len(line) == 0 {
 			continue
 		}
-		var tmp = []byte(strings.ToLower(string(line)))
-		data[string(tmp)] = true
+		data[string(bytes.ToLower(line))] = true
 	}
 	return uintptr(cgo.NewHandle(&data))
 }
