@@ -103,6 +103,7 @@ namespace fcitx {
             return true;
         }
         LOTUS_ERROR("Failed to connect to socket: " + std::string(strerror(errno)));
+        close(current_fd);
         int old_fd = uinput_client_fd_.exchange(-1);
         if (old_fd != -1) {
             close(old_fd);
