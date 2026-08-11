@@ -65,20 +65,26 @@ const (
 )
 
 func determineMacroCase(str string) uint8 {
-	if len(str) == 0 {
-		return VnCaseNoChange
-	}
-
-	r, width := utf8.DecodeRuneInString(str)
-	if unicode.IsLower(r) {
-		return VnCaseAllSmall
-	}
-	for _, c := range str[width:] {
-		if unicode.IsLower(c) {
-			return VnCaseNoChange
+	var hasLower, hasUpper bool
+	for _, c := range str {
+		if unicode.IsLetter(c) {
+			if unicode.IsLower(c) {
+				hasLower = true
+			} else if unicode.IsUpper(c) {
+				hasUpper = true
+			}
+			if hasLower && hasUpper {
+				return VnCaseNoChange
+			}
 		}
 	}
-	return VnCaseAllCapital
+	if hasLower {
+		return VnCaseAllSmall
+	}
+	if hasUpper {
+		return VnCaseAllCapital
+	}
+	return VnCaseNoChange
 }
 
 var strftimeReplacer = strings.NewReplacer(
@@ -141,7 +147,7 @@ func (e *FcitxBambooEngine) expandMacro(str, macroText string) string {
 }
 
 func (e *FcitxBambooEngine) getMacroText() (bool, string) {
-	if !e.macroEnabled {
+	if !e.macroEnabled || e.macroTable.Empty() {
 		return false, ""
 	}
 
@@ -161,7 +167,7 @@ func (e *FcitxBambooEngine) shouldFallbackToEnglish(checkVnRune bool) bool {
 	if len(vnSeq) == 0 {
 		return false
 	}
-	if e.macroEnabled {
+	if e.macroEnabled && !e.macroTable.Empty() {
 		// Use macrotable.Get instead of getMacroText to avoid unnecessary expandMacro
 		if _, ok := e.macroTable.Get(e.getProcessedString(bamboo.PunctuationMode)); ok {
 			return false
@@ -188,10 +194,10 @@ func (e *FcitxBambooEngine) getRawKeyLen() int {
 }
 
 func (e *FcitxBambooEngine) getPreeditString() string {
-	if e.autoNonVnRestore && e.shouldFallbackToEnglish(true) {
-		return e.getProcessedString(bamboo.EnglishMode)
+	if e.shouldFallbackToEnglish(true) {
+		return e.getProcessedString(bamboo.EnglishMode | bamboo.FullText)
 	}
-	return e.getProcessedString(bamboo.PunctuationMode)
+	return e.getProcessedString(bamboo.PunctuationMode | bamboo.FullText)
 }
 
 func (e *FcitxBambooEngine) updateLastKeyWithShift(keyVal, state uint32) {
@@ -286,7 +292,7 @@ func (e *FcitxBambooEngine) getCommitText(keyVal, state uint32, oldText string) 
 		if inKeyList(e.preeditor.GetInputMethod().AppendingKeys, keyRune) {
 			var newText string
 			if e.shouldFallbackToEnglish(true) {
-				newText = e.getProcessedString(bamboo.EnglishMode)
+				newText = e.getProcessedString(bamboo.EnglishMode | bamboo.FullText)
 			} else {
 				newText = e.getProcessedString(bamboo.VietnameseMode)
 			}
@@ -313,11 +319,6 @@ func (e *FcitxBambooEngine) getCommitText(keyVal, state uint32, oldText string) 
 				// ] => o?
 				return e.getPreeditString(), false
 			}
-		} else if e.macroEnabled {
-			if e.autoNonVnRestore && e.shouldFallbackToEnglish(true) {
-				return e.getProcessedString(bamboo.EnglishMode), false
-			}
-			return e.getProcessedString(bamboo.PunctuationMode), false
 		} else {
 			return e.getPreeditString(), false
 		}
@@ -332,7 +333,7 @@ func (e *FcitxBambooEngine) getCommitText(keyVal, state uint32, oldText string) 
 		}
 		if bamboo.HasAnyVietnameseRune(oldText) && e.mustFallbackToEnglish() {
 			e.preeditor.RestoreLastWord(false)
-			newText := e.getProcessedString(bamboo.EnglishMode) + string(keyRune)
+			newText := e.getProcessedString(bamboo.EnglishMode | bamboo.FullText) + string(keyRune)
 			e.preeditor.ProcessKey(keyRune, bamboo.EnglishMode)
 			return newText, true
 		}
@@ -369,7 +370,7 @@ func (e *FcitxBambooEngine) canProcessKey(keyVal uint32) bool {
 		return true
 	}
 	if keyVal == FcitxTab {
-		if e.macroEnabled {
+		if e.macroEnabled && !e.macroTable.Empty() {
 			// Use macrotable.Get instead of getMacroText to avoid unnecessary expandMacro
 			if _, ok := e.macroTable.Get(e.getProcessedString(bamboo.PunctuationMode)); ok {
 				return true
@@ -385,7 +386,7 @@ func (e *FcitxBambooEngine) isValidState(state uint32) bool {
 
 func (e *FcitxBambooEngine) getComposedString(oldText string) string {
 	if bamboo.HasAnyVietnameseRune(oldText) && e.mustFallbackToEnglish() {
-		return e.getProcessedString(bamboo.EnglishMode)
+		return e.getProcessedString(bamboo.EnglishMode | bamboo.FullText)
 	}
 	return oldText
 }
