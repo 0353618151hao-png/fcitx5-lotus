@@ -146,6 +146,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "naoNao89",
+      "name": "Cả thế giới là Rust",
+      "avatar_url": "https://avatars.githubusercontent.com/u/90588855?v=4",
+      "profile": "https://github.com/naoNao89",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 4,
