@@ -343,8 +343,39 @@ int main(int argc, char* argv[]) {
         if ((fds[2].revents & POLLIN) != 0) {
             int new_fd = accept4(mouse_server_fd.get(), nullptr, nullptr, SOCK_NONBLOCK);
             if (new_fd >= 0) {
-                LotusLogger::instance().info("New mouse flag client connected");
-                addon_fd.reset(new_fd);
+                struct ucred cred{};
+                socklen_t    len                = sizeof(struct ucred);
+                char         exe_path[PATH_MAX] = {0};
+
+                bool         authorized = false;
+                if (getsockopt(new_fd, SOL_SOCKET, SO_PEERCRED, &cred, &len) == 0) {
+                    if (cred.uid == expected_uid) {
+                        char path[64];
+                        snprintf(path, sizeof(path), "/proc/%d/exe", cred.pid);
+
+                        ssize_t ret = readlink(path, exe_path, sizeof(exe_path) - 1);
+                        if (ret != -1) {
+                            exe_path[ret] = '\0'; // NOLINT
+                        }
+
+                        if (strcmp(exe_path, "/usr/bin/fcitx5") == 0) {
+                            authorized = true;
+                        } else {
+                            LotusLogger::instance().warn("Unauthorized executable connection attempt to mouse socket from: " + std::string(exe_path));
+                        }
+                    } else {
+                        LotusLogger::instance().warn("Unauthorized UID connection attempt to mouse socket from UID: " + std::to_string(cred.uid));
+                    }
+                } else {
+                    LotusLogger::instance().warn("Failed to get peer credentials for mouse socket");
+                }
+
+                if (authorized) {
+                    LotusLogger::instance().info("New mouse flag client connected");
+                    addon_fd.reset(new_fd);
+                } else {
+                    close(new_fd);
+                }
             }
         }
 
