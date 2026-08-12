@@ -4,20 +4,21 @@
 //
 // The backspace branch in LotusState::handleEmojiMode must erase the
 // last *codepoint* (1-4 UTF-8 bytes) so the preedit buffer stays valid
-// UTF-8. This commit embeds a verbatim copy of that branch's snippet
-// so the bug is reproduced without touching production code; the fix
-// commit extracts it into lotus-utils::eraseLastUtf8Codepoint() and
-// this test then calls the shared helper instead of the copy.
+// UTF-8. The helper that does the work is eraseLastUtf8Codepoint() in
+// lotus-utils; this test calls that same helper, so the test cannot
+// drift from production behavior.
 //
 // Each case asserts both:
 //   - the buffer is truncated to the expected substring, and
 //   - the result is well-formed UTF-8 (using fcitx::utf8::validate).
 //
 // Build & run (no CMake integration, same pattern as scripts/test/):
-//   g++ -std=c++17 test-emoji-backspace.cpp \
-//       $(pkg-config --cflags --libs fcitx5-core fcitx5-utils) \
+//   g++ -std=c++17 test-emoji-backspace.cpp ../src/lotus-utils.cpp \
+//       -I../src $(pkg-config --cflags --libs fcitx5-core fcitx5-utils) \
 //       -o test_emoji_backspace
 //   ./test_emoji_backspace
+
+#include "lotus-utils.h"
 
 #include <cstdio>
 #include <string>
@@ -26,15 +27,6 @@
 #include <fcitx-utils/utf8.h>
 
 namespace {
-
-    // Verbatim copy of the backspace snippet from
-    // LotusState::handleEmojiMode (as of c39c548).
-    void eraseLastUtf8Codepoint(std::string& buffer) {
-        buffer.pop_back();
-        while (!buffer.empty() && (buffer.back() & 0xC0) == 0x80) {
-            buffer.pop_back();
-        }
-    }
 
     struct EmojiBackspaceCase {
         const char* name;
@@ -56,8 +48,7 @@ int main() {
     const std::vector<EmojiBackspaceCase> cases = {
         // ASCII: still works, sanity check.
         {"ascii_abc", "abc", "ab"},
-        // 2-byte: U+00E9 LATIN SMALL LETTER E WITH ACUTE (no 2-byte
-        // emoji exists, so a non-emoji stands in for this width).
+        // 2-byte: U+00E9 LATIN SMALL LETTER E WITH ACUTE
         {"ascii_then_2byte", std::string("a\xC3\xA9"), "a"},
         // 3-byte: U+263A WHITE SMILING FACE
         {"ascii_then_3byte", std::string("a\xE2\x98\xBA"), "a"},
