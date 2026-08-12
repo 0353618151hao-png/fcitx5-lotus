@@ -23,13 +23,7 @@ from qtpy.QtCore import Qt, QSize
 from i18n import _
 from core.dbus_handler import LotusDBusHandler
 
-from ui.pages.dynamic_settings import DynamicSettingsPage, SettingsCategory
-from ui.pages.macro_editor import MacroEditorPage
-from ui.pages.dict_editor import DictEditorPage
-from ui.pages.keymap_editor import KeymapEditorPage
-from ui.pages.about import AboutPage
-from ui.pages.mode_manager import ModeManagerPage
-from ui.pages.backup import BackupPage
+# Lazy loading pages on demand
 
 
 class LotusSettingsWindow(QMainWindow):
@@ -48,10 +42,14 @@ class LotusSettingsWindow(QMainWindow):
 
     def update_reset_button_state(self):
         any_modified_from_default = any(
-            (hasattr(self.content_stack.widget(i), "is_modified_from_default")
-             and self.content_stack.widget(i).is_modified_from_default())
-            or (hasattr(self.content_stack.widget(i), "is_modified")
-                and self.content_stack.widget(i).is_modified())
+            (
+                hasattr(self.content_stack.widget(i), "is_modified_from_default")
+                and self.content_stack.widget(i).is_modified_from_default()
+            )
+            or (
+                hasattr(self.content_stack.widget(i), "is_modified")
+                and self.content_stack.widget(i).is_modified()
+            )
             for i in range(self.content_stack.count())
         )
         self.btn_reset.setEnabled(any_modified_from_default)
@@ -94,8 +92,7 @@ class LotusSettingsWindow(QMainWindow):
 
         self.sidebar = QListWidget()
         self.sidebar.setFixedWidth(200)
-        self.sidebar.setStyleSheet(
-            """
+        self.sidebar.setStyleSheet("""
             QListWidget {
                 border: none;
                 background: transparent;
@@ -114,8 +111,7 @@ class LotusSettingsWindow(QMainWindow):
             QListWidget::item:hover:!selected {
                 background: palette(alternate-base);
             }
-        """
-        )
+        """)
         self.sidebar.setObjectName("Sidebar")
         self.sidebar.setFrameShape(QFrame.NoFrame)
 
@@ -168,61 +164,81 @@ class LotusSettingsWindow(QMainWindow):
         layout.addWidget(container)
 
     def _setup_pages(self):
-        # Top-level Settings Pages
-        self._add_page(
-            _("General"),
-            "preferences-system",
-            DynamicSettingsPage(self.dbus_handler, category=SettingsCategory.GENERAL),
-        )
-        self._add_page(
-            _("Typing"),
-            "input-keyboard",
-            DynamicSettingsPage(self.dbus_handler, category=SettingsCategory.TYPING),
-        )
-        self._add_page(
-            _("Applications"),
-            "applications-other",
-            ModeManagerPage(self.dbus_handler),
-        )
-        self._add_page(
-            _("Macros"),
-            "accessories-text-editor",
-            MacroEditorPage(self.dbus_handler),
-        )
-        self._add_page(
-            _("Dictionary"),
-            "edit-copy",
-            DictEditorPage(self.dbus_handler),
-        )
-        self._add_page(
-            _("Keymap"),
-            "preferences-desktop-keyboard",
-            KeymapEditorPage(self.dbus_handler),
-        )
-        self._add_page(
-            _("Shortcuts"),
-            "preferences-desktop-keyboard-shortcuts",
-            DynamicSettingsPage(self.dbus_handler, category=SettingsCategory.SHORTCUTS),
-        )
-        self._add_page(
-            _("Appearance"),
-            "preferences-desktop-theme",
-            DynamicSettingsPage(
-                self.dbus_handler, category=SettingsCategory.APPEARANCE
-            ),
-        )
-        self._add_page(
-            _("Backup"),
-            "document-save-as",
-            BackupPage(self.dbus_handler),
-        )
+        def create_general():
+            from ui.pages.dynamic_settings import DynamicSettingsPage, SettingsCategory
 
-        # Bottom section
+            return DynamicSettingsPage(
+                self.dbus_handler, category=SettingsCategory.GENERAL
+            )
+
+        def create_typing():
+            from ui.pages.dynamic_settings import DynamicSettingsPage, SettingsCategory
+
+            return DynamicSettingsPage(
+                self.dbus_handler, category=SettingsCategory.TYPING
+            )
+
+        def create_applications():
+            from ui.pages.mode_manager import ModeManagerPage
+
+            return ModeManagerPage(self.dbus_handler)
+
+        def create_macros():
+            from ui.pages.macro_editor import MacroEditorPage
+
+            return MacroEditorPage(self.dbus_handler)
+
+        def create_dict():
+            from ui.pages.dict_editor import DictEditorPage
+
+            return DictEditorPage(self.dbus_handler)
+
+        def create_keymap():
+            from ui.pages.keymap_editor import KeymapEditorPage
+
+            return KeymapEditorPage(self.dbus_handler)
+
+        def create_shortcuts():
+            from ui.pages.dynamic_settings import DynamicSettingsPage, SettingsCategory
+
+            return DynamicSettingsPage(
+                self.dbus_handler, category=SettingsCategory.SHORTCUTS
+            )
+
+        def create_appearance():
+            from ui.pages.dynamic_settings import DynamicSettingsPage, SettingsCategory
+
+            return DynamicSettingsPage(
+                self.dbus_handler, category=SettingsCategory.APPEARANCE
+            )
+
+        def create_backup():
+            from ui.pages.backup import BackupPage
+
+            return BackupPage(self.dbus_handler)
+
+        def create_about():
+            from ui.pages.about import AboutPage
+
+            return AboutPage()
+
+        self._add_page(_("General"), "preferences-system", create_general)
+        self._add_page(_("Typing"), "input-keyboard", create_typing)
+        self._add_page(_("Applications"), "applications-other", create_applications)
+        self._add_page(_("Macros"), "accessories-text-editor", create_macros)
+        self._add_page(_("Dictionary"), "edit-copy", create_dict)
+        self._add_page(_("Keymap"), "preferences-desktop-keyboard", create_keymap)
+        self._add_page(
+            _("Shortcuts"), "preferences-desktop-keyboard-shortcuts", create_shortcuts
+        )
+        self._add_page(_("Appearance"), "preferences-desktop-theme", create_appearance)
+        self._add_page(_("Backup"), "document-save-as", create_backup)
+
         spacer = QListWidgetItem()
         spacer.setFlags(Qt.NoItemFlags)
         spacer.setSizeHint(QSize(0, 20))
         self.sidebar.addItem(spacer)
-        self._add_page(_("About"), "help-about", AboutPage())
+        self._add_page(_("About"), "help-about", create_about)
 
     def on_restore_defaults(self):
         """Resets all settings to their default values."""
@@ -296,9 +312,7 @@ class LotusSettingsWindow(QMainWindow):
         if not quiet:
             from qtpy.QtWidgets import QMessageBox
 
-            QMessageBox.information(
-                self, _("Success"), _("Settings saved.")
-            )
+            QMessageBox.information(self, _("Success"), _("Settings saved."))
         return True
 
     def on_ok(self):
@@ -326,7 +340,13 @@ class LotusSettingsWindow(QMainWindow):
 
         role = item.data(Qt.UserRole)
         if role == "page":
-            widget = item.data(Qt.UserRole + 1)
+            widget = item.data(Qt.UserRole + 2)
+            if widget is None:
+                factory = item.data(Qt.UserRole + 1)
+                if factory:
+                    widget = factory()
+                    self.content_stack.addWidget(widget)
+                    item.setData(Qt.UserRole + 2, widget)
             if widget:
                 self.content_stack.setCurrentWidget(widget)
             self.update_reset_button_state()
@@ -343,11 +363,10 @@ class LotusSettingsWindow(QMainWindow):
         self.resize(w, h)
         self.move((screen.width() - w) // 2, (screen.height() - h) // 2)
 
-    def _add_page(self, title: str, icon_name: str, widget: QWidget):
+    def _add_page(self, title: str, icon_name: str, page_factory):
         item = QListWidgetItem(QIcon.fromTheme(icon_name), title)
         item.setData(Qt.UserRole, "page")
-
-        self.content_stack.addWidget(widget)
-        item.setData(Qt.UserRole + 1, widget)
+        item.setData(Qt.UserRole + 1, page_factory)
+        item.setData(Qt.UserRole + 2, None)
 
         self.sidebar.addItem(item)
