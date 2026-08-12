@@ -307,7 +307,7 @@ func (e *FcitxBambooEngine) getCommitText(keyVal, state uint32, oldText string) 
 					e.preeditor.ProcessKey(' ', bamboo.EnglishMode)
 				}
 				return ret, isWordBreakRune
-			} else if getLastRune(newText) == keyRune {
+			} else if len(newText) > 0 && getLastRune(newText) == keyRune {
 				// f] => f]
 				var isWordBreakRune = bamboo.IsWordBreakSymbol(keyRune)
 				if isWordBreakRune {
