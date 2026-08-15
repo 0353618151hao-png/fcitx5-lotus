@@ -24,6 +24,7 @@
 #include <fcitx-utils/event.h>
 #include <fcitx-utils/utf8.h>
 #include <fcitx-utils/eventdispatcher.h>
+#include <fcitx-utils/misc.h>
 
 #include <atomic>
 #include <cstdlib>
@@ -208,12 +209,7 @@ namespace fcitx {
         settingsAction_ = std::make_unique<SimpleAction>();
         settingsAction_->setShortText(_("Settings"));
         settingsAction_->setIcon("configure");
-        connections_.emplace_back(settingsAction_->connect<SimpleAction::Activated>([](InputContext*) {
-            if (fork() == 0) {
-                execl(FCITX5_LOTUS_SETTINGS_PATH, FCITX5_LOTUS_SETTINGS_PATH, nullptr);
-                _exit(1);
-            }
-        }));
+        connections_.emplace_back(settingsAction_->connect<SimpleAction::Activated>([](InputContext*) { startProcess({FCITX5_LOTUS_SETTINGS_PATH}); }));
         uiManager.registerAction("lotus-settings", settingsAction_.get());
 
 #if LOTUS_USE_MODERN_FCITX_API

@@ -1,5 +1,5 @@
-fcitx5-lotus (3.5.1-1) unstable; urgency=medium
+fcitx5-lotus (3.5.2-1) unstable; urgency=medium
 
-  * Fix some bugs
+  * Fix option [{}]->ưƯƠơ wrong when enable CapsLock
 
- -- Nguyen Hoang Ky <nhktmdzhg@gmail.com>  Thu, 13 Aug 2026 00:21:00 +0700
+ -- Nguyen Hoang Ky <nhktmdzhg@gmail.com>  Sat, 15 Aug 2026 22:17:00 +0700

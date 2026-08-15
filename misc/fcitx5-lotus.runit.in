@@ -13,10 +13,10 @@ if [ "$user" = "$svc" ]; then
     exit 1
 fi
 
-setfacl -m u:uinput_proxy:rw /dev/uinput
+setfacl -m u:@LOTUS_UINPUT_PROXY_USER@:rw /dev/uinput
 
 exec setpriv \
-    --reuid=uinput_proxy \
+    --reuid=@LOTUS_UINPUT_PROXY_USER@ \
     --regid=input \
     --init-groups \
     --bounding-set -all,+sys_nice,+sys_ptrace \

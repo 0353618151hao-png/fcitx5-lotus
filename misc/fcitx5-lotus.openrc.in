@@ -12,7 +12,7 @@ description="Fcitx5 Lotus Server for $user"
 capabilities="^cap_sys_nice,^cap_sys_ptrace"
 command="/usr/bin/fcitx5-lotus-server"
 command_args="-u $user"
-command_user="uinput_proxy:input"
+command_user="@LOTUS_UINPUT_PROXY_USER@:input"
 pidfile="/run/${RC_SVCNAME}.pid"
 depend() {
     need localmount
@@ -28,7 +28,7 @@ start_pre() {
         einfo "     sudo rc-service fcitx5-lotus.\$(whoami) restart"
         return 1
    fi
-   setfacl -m u:uinput_proxy:rw /dev/uinput
+   setfacl -m u:@LOTUS_UINPUT_PROXY_USER@:rw /dev/uinput
 }
 
 stop_post() {

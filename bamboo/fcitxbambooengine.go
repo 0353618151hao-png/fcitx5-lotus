@@ -231,19 +231,19 @@ func inKeyList(list []rune, key rune) bool {
 func (e *FcitxBambooEngine) toUpper(keyRune rune) rune {
 	switch keyRune {
 	case '[':
-		if inKeyList(e.preeditor.GetInputMethod().AppendingKeys, keyRune) {
+		if e.preeditor.CanProcessKey(keyRune) {
 			return '{'
 		}
 	case ']':
-		if inKeyList(e.preeditor.GetInputMethod().AppendingKeys, keyRune) {
+		if e.preeditor.CanProcessKey(keyRune) {
 			return '}'
 		}
 	case '{':
-		if inKeyList(e.preeditor.GetInputMethod().AppendingKeys, keyRune) {
+		if e.preeditor.CanProcessKey(keyRune) {
 			return '['
 		}
 	case '}':
-		if inKeyList(e.preeditor.GetInputMethod().AppendingKeys, keyRune) {
+		if e.preeditor.CanProcessKey(keyRune) {
 			return ']'
 		}
 	}
