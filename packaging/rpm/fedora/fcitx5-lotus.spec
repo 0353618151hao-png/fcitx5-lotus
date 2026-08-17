@@ -19,7 +19,6 @@ BuildRequires:  libX11-devel
 
 BuildRequires:  golang
 BuildRequires:  python3
-BuildRequires:  libgudev-devel
 
 %{?systemd_requires}
 Requires:       fcitx5-data
