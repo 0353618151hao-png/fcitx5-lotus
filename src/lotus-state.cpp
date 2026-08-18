@@ -965,11 +965,16 @@ namespace fcitx {
     void LotusState::keyEvent(KeyEvent& keyEvent) {
         if (!lotusEngine_)
             return;
-        if (keyEvent.rawKey().isModifier()) {
-            handleModifierTap(keyEvent);
-            return;
+        if (realMode == LotusMode::Preedit) {
+            if (keyEvent.rawKey().check(FcitxKey_Shift_L) || keyEvent.rawKey().check(FcitxKey_Shift_R))
+                return;
+        } else {
+            if (keyEvent.rawKey().isModifier()) {
+                handleModifierTap(keyEvent);
+                return;
+            }
+            cancelModifierTap();
         }
-        cancelModifierTap();
         if (keyEvent.isRelease())
             return;
         if (uinput_client_fd_ < 0) {
