@@ -15,8 +15,10 @@ namespace fcitx {
     }
 
     static std::string joinPath(const std::string& dir, const std::string& name) {
-        if (dir.empty()) return name;
-        if (dir.back() == '/') return dir + name;
+        if (dir.empty())
+            return name;
+        if (dir.back() == '/')
+            return dir + name;
         return dir + "/" + name;
     }
 
@@ -28,7 +30,8 @@ namespace fcitx {
             for (const auto& dir : paths.systemDirs) {
                 for (const char* ext : {".png", ".svg"}) {
                     const std::string p = joinPath(dir, name + ext);
-                    if (fileReadable(p)) return p;
+                    if (fileReadable(p))
+                        return p;
                 }
             }
         }

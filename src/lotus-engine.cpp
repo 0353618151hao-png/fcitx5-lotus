@@ -99,9 +99,9 @@ namespace fcitx {
         // Each probe spawns subprocesses, and subModeIconImpl calls this on
         // every tray update while IconTheme is Auto.  Cache the result briefly
         // so the cost is paid at most once per few seconds.
-        static int64_t lastCheckMs  = 0;
-        static bool    cachedValue  = false;
-        const int64_t  now          = now_ms();
+        static int64_t lastCheckMs = 0;
+        static bool    cachedValue = false;
+        const int64_t  now         = now_ms();
         if (now - lastCheckMs < 5000) {
             return cachedValue;
         }
@@ -1179,7 +1179,8 @@ namespace fcitx {
         // or SNI hosts handle filesystem paths in IconName.
         static const bool kIsCinnamon = [] {
             const char* de = std::getenv("XDG_CURRENT_DESKTOP");
-            if (!de) de = std::getenv("DESKTOP_SESSION");
+            if (!de)
+                de = std::getenv("DESKTOP_SESSION");
             return de && (std::string(de) == "cinnamon" || std::string(de) == "X-Cinnamon");
         }();
 
@@ -1201,12 +1202,8 @@ namespace fcitx {
         LotusIconSearchPaths paths;
         // PNG-first dirs (generated at build time), then SVG-only dirs.
         paths.systemDirs = {
-            "/usr/share/icons/hicolor/22x22/status",
-            "/usr/share/icons/hicolor/24x24/status",
-            "/usr/share/icons/hicolor/scalable/status",
-            "/usr/share/icons/hicolor/scalable/apps",
-            "/usr/share/icons/hicolor/48x48/apps",
-            "/usr/share/pixmaps",
+            "/usr/share/icons/hicolor/22x22/status",  "/usr/share/icons/hicolor/24x24/status", "/usr/share/icons/hicolor/scalable/status",
+            "/usr/share/icons/hicolor/scalable/apps", "/usr/share/icons/hicolor/48x48/apps",   "/usr/share/pixmaps",
         };
         paths.fallbackDir = FCITX_LOTUS_ICON_DIR; // compile-time install dir
 
