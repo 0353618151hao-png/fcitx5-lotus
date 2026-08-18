@@ -19,7 +19,7 @@ BuildRequires:  libX11-devel
 
 BuildRequires:  golang
 BuildRequires:  python3
-BuildRequires:  libgudev-devel
+
 # rsvg-convert generates the PNG tray icons (data/CMakeLists.txt)
 BuildRequires:  librsvg2-tools
 
