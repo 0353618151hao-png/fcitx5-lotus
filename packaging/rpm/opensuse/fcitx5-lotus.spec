@@ -20,6 +20,8 @@ BuildRequires:  go
 BuildRequires:  python-rpm-macros
 Requires(post): udev
 BuildRequires:  sysuser-tools
+# rsvg-convert generates the PNG tray icons (data/CMakeLists.txt)
+BuildRequires:  rsvg-convert
 
 %{?systemd_requires}
 Requires:       fcitx5
@@ -28,6 +30,8 @@ Requires:       (python3-PyQt6 or python3-pyside6)
 Requires:       python3-dbus-python
 Requires:       hicolor-icon-theme
 Requires:       acl
+# SVG tray icons via QIcon
+Requires:       qt6-svg
 
 %description
 Vietnamese input method for fcitx5
@@ -81,6 +85,11 @@ Vietnamese input method for fcitx5
 %{_datadir}/icons/hicolor/scalable/apps/fcitx-lotus-emoji-default-black.svg
 %{_datadir}/icons/hicolor/scalable/apps/fcitx-lotus-default-black.svg
 %{_datadir}/icons/hicolor/scalable/apps/fcitx-lotus-off-default-black.svg
+
+# Absolute-path icon resolution (see lotus-engine.cpp subModeIconImpl)
+%{_datadir}/icons/hicolor/scalable/status/fcitx-lotus*.svg
+%{_datadir}/icons/hicolor/*/status/fcitx-lotus*.png
+%{_datadir}/pixmaps/fcitx-lotus*.*
 
 %{_datadir}/icons/breeze/status/22/fcitx-lotus-default.svg
 %{_datadir}/icons/breeze/status/22/fcitx-lotus-off-default.svg
