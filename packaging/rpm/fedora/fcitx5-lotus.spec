@@ -19,8 +19,6 @@ BuildRequires:  libX11-devel
 
 BuildRequires:  golang
 BuildRequires:  python3
-
-# rsvg-convert generates the PNG tray icons (data/CMakeLists.txt)
 BuildRequires:  librsvg2-tools
 
 %{?systemd_requires}
@@ -31,8 +29,6 @@ Requires:       (python3-pyqt6 or python3-pyside6)
 Requires:       python3-dbus
 Requires:       hicolor-icon-theme
 Requires:       acl
-# SVG tray icons via QIcon
-Requires:       qt6-qtsvg
 
 %description
 Vietnamese input method for fcitx5

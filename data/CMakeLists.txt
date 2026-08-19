@@ -1,6 +1,6 @@
 install(DIRECTORY icons/ DESTINATION "${CMAKE_INSTALL_DATADIR}/icons/"
-        PATTERN .* EXCLUDE
-        PATTERN *~ EXCLUDE)
+    PATTERN .* EXCLUDE
+    PATTERN *~ EXCLUDE)
 
 # ── Status/tray icon coverage: hicolor status/ + pixmaps/ ─────────────────
 # The engine resolves icons to absolute paths (see lotus-engine.cpp
@@ -18,6 +18,7 @@ foreach(ICON ${LOTUS_STATUS_ICONS})
     install(FILES icons/hicolor/scalable/apps/${ICON}.svg
         DESTINATION "${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/status"
         RENAME "${ICON}.svg")
+
     # pixmaps/ — last-resort fallback for all DEs, Qt, GTK, KWin
     install(FILES icons/hicolor/scalable/apps/${ICON}.svg
         DESTINATION "${CMAKE_INSTALL_DATADIR}/pixmaps"
@@ -27,39 +28,36 @@ endforeach()
 # PNG tray icons: some SNI hosts (KWin/plasmashell) render PNGs natively but
 # not SVGs.  Generate 22/24px status PNGs and a 128px pixmaps PNG per icon
 # when rsvg-convert is available.
-find_program(RSVG_CONVERT rsvg-convert)
-if(RSVG_CONVERT)
-    set(LOTUS_PNG_OUTPUTS)
-    foreach(ICON ${LOTUS_STATUS_ICONS})
-        set(ICON_SVG "${CMAKE_CURRENT_SOURCE_DIR}/icons/hicolor/scalable/apps/${ICON}.svg")
+find_program(RSVG_CONVERT rsvg-convert REQUIRED)
+set(LOTUS_PNG_OUTPUTS)
 
-        foreach(SIZE 22 24)
-            set(OUT "${CMAKE_CURRENT_BINARY_DIR}/icons/hicolor/${SIZE}x${SIZE}/status/${ICON}.png")
-            add_custom_command(OUTPUT ${OUT}
-                COMMAND ${CMAKE_COMMAND} -E make_directory
-                    "${CMAKE_CURRENT_BINARY_DIR}/icons/hicolor/${SIZE}x${SIZE}/status"
-                COMMAND ${RSVG_CONVERT} -w ${SIZE} -h ${SIZE} ${ICON_SVG} -o ${OUT}
-                DEPENDS ${ICON_SVG}
-                COMMENT "Generating ${SIZE}x${SIZE} status icon for ${ICON}")
-            install(FILES ${OUT}
-                DESTINATION "${CMAKE_INSTALL_DATADIR}/icons/hicolor/${SIZE}x${SIZE}/status")
-            list(APPEND LOTUS_PNG_OUTPUTS ${OUT})
-        endforeach()
+foreach(ICON ${LOTUS_STATUS_ICONS})
+    set(ICON_SVG "${CMAKE_CURRENT_SOURCE_DIR}/icons/hicolor/scalable/apps/${ICON}.svg")
 
-        set(PIX_OUT "${CMAKE_CURRENT_BINARY_DIR}/pixmaps/${ICON}.png")
-        add_custom_command(OUTPUT ${PIX_OUT}
-            COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/pixmaps"
-            COMMAND ${RSVG_CONVERT} -w 128 -h 128 ${ICON_SVG} -o ${PIX_OUT}
+    foreach(SIZE 22 24)
+        set(OUT "${CMAKE_CURRENT_BINARY_DIR}/icons/hicolor/${SIZE}x${SIZE}/status/${ICON}.png")
+        add_custom_command(OUTPUT ${OUT}
+            COMMAND ${CMAKE_COMMAND} -E make_directory
+            "${CMAKE_CURRENT_BINARY_DIR}/icons/hicolor/${SIZE}x${SIZE}/status"
+            COMMAND ${RSVG_CONVERT} -w ${SIZE} -h ${SIZE} ${ICON_SVG} -o ${OUT}
             DEPENDS ${ICON_SVG}
-            COMMENT "Generating 128x128 pixmaps icon for ${ICON}")
-        install(FILES ${PIX_OUT}
-            DESTINATION "${CMAKE_INSTALL_DATADIR}/pixmaps")
-        list(APPEND LOTUS_PNG_OUTPUTS ${PIX_OUT})
+            COMMENT "Generating ${SIZE}x${SIZE} status icon for ${ICON}")
+        install(FILES ${OUT}
+            DESTINATION "${CMAKE_INSTALL_DATADIR}/icons/hicolor/${SIZE}x${SIZE}/status")
+        list(APPEND LOTUS_PNG_OUTPUTS ${OUT})
     endforeach()
 
-    add_custom_target(lotus_icons ALL DEPENDS ${LOTUS_PNG_OUTPUTS})
-else()
-    message(WARNING "rsvg-convert not found — PNG tray icons will not be generated")
-endif()
+    set(PIX_OUT "${CMAKE_CURRENT_BINARY_DIR}/pixmaps/${ICON}.png")
+    add_custom_command(OUTPUT ${PIX_OUT}
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/pixmaps"
+        COMMAND ${RSVG_CONVERT} -w 128 -h 128 ${ICON_SVG} -o ${PIX_OUT}
+        DEPENDS ${ICON_SVG}
+        COMMENT "Generating 128x128 pixmaps icon for ${ICON}")
+    install(FILES ${PIX_OUT}
+        DESTINATION "${CMAKE_INSTALL_DATADIR}/pixmaps")
+    list(APPEND LOTUS_PNG_OUTPUTS ${PIX_OUT})
+endforeach()
+
+add_custom_target(lotus_icons ALL DEPENDS ${LOTUS_PNG_OUTPUTS})
 
 install(FILES dictionaries/vietnamese.cm.dict DESTINATION "${FCITX_INSTALL_PKGDATADIR}/lotus")

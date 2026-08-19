@@ -20,7 +20,6 @@ BuildRequires:  go
 BuildRequires:  python-rpm-macros
 Requires(post): udev
 BuildRequires:  sysuser-tools
-# rsvg-convert generates the PNG tray icons (data/CMakeLists.txt)
 BuildRequires:  rsvg-convert
 
 %{?systemd_requires}
@@ -30,8 +29,6 @@ Requires:       (python3-PyQt6 or python3-pyside6)
 Requires:       python3-dbus-python
 Requires:       hicolor-icon-theme
 Requires:       acl
-# SVG tray icons via QIcon
-Requires:       qt6-svg
 
 %description
 Vietnamese input method for fcitx5
