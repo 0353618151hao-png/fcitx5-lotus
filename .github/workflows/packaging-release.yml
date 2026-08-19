@@ -356,7 +356,7 @@ jobs:
             pacman -Syu --noconfirm \
               cmake extra-cmake-modules gcc go \
               fcitx5 libinput libx11 systemd python \
-              make pkgconf zstd
+              make pkgconf zstd librsvg
 
             cd /work
             export LDFLAGS="-Wl,-O1 -Wl,--sort-common -Wl,--as-needed -Wl,-z,relro -Wl,-z,now -Wl,-z,pack-relative-relocs"
