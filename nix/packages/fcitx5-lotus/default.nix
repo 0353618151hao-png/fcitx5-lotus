@@ -12,6 +12,7 @@
   kdePackages,
   libinput,
   libx11,
+  librsvg,
   pkg-config,
   python3,
   qt6,
@@ -19,14 +20,14 @@
 }:
 stdenv.mkDerivation rec {
   pname = "fcitx5-lotus";
-  version = "3.5.2";
+  version = "3.5.3";
 
   src = fetchFromGitHub {
     owner = "LotusInputMethod";
     repo = "fcitx5-lotus";
     rev = "v${version}";
     fetchSubmodules = true;
-    hash = "sha256-TflLGUtQBYVjJ6a/vTJa7a3HyVKxb6s9Rzh6FyT4010=";
+    hash = "sha256-pawXvz8jqNuJHYz8A78yqOdwihHthycYO2ZgPnMf/vQ=";
   };
 
   nativeBuildInputs = [
@@ -35,6 +36,7 @@ stdenv.mkDerivation rec {
     gettext
     go
     hicolor-icon-theme
+    librsvg
     pkg-config
     qt6.wrapQtAppsHook
   ];
