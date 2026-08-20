@@ -5,6 +5,7 @@ set(fcitx_lotus_sources
   lotus-candidates.cpp
   lotus-utils.cpp
   lotus-monitor.cpp
+  lotus-icon-resolver.cpp
   emoji.cpp
 )
 
@@ -26,6 +27,7 @@ target_include_directories(lotus PRIVATE
 )
 target_compile_definitions(lotus PRIVATE
     FCITX5_LOTUS_SETTINGS_PATH=\"${CMAKE_INSTALL_FULL_BINDIR}/fcitx5-lotus-settings\"
+    FCITX_LOTUS_ICON_DIR=\"${CMAKE_INSTALL_FULL_DATADIR}/icons/hicolor/scalable/apps\"
 )
 install(TARGETS lotus DESTINATION "${CMAKE_INSTALL_LIBDIR}/fcitx5")
 

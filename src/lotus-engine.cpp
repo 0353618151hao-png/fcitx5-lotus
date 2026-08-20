@@ -13,6 +13,7 @@
 #include "lotus-candidates.h"
 #include "lotus-monitor.h"
 #include "lotus-utils.h"
+#include "lotus-icon-resolver.h"
 #include "ack-apps.h"
 #include <optional>
 #include <sys/socket.h>
@@ -95,6 +96,29 @@ namespace fcitx {
     }
 
     bool LotusEngine::isDarkMode() {
+        // Each probe spawns subprocesses, and subModeIconImpl calls this on
+        // every tray update while IconTheme is Auto.  Cache the result briefly
+        // so the cost is paid at most once per few seconds.
+        static int64_t lastCheckMs = 0;
+        static bool    cachedValue = false;
+        const int64_t  now         = now_ms();
+        if (now - lastCheckMs < 5000) {
+            return cachedValue;
+        }
+        lastCheckMs = now;
+        cachedValue = false;
+
+        // GTK_THEME is honored by lightweight DEs that lack the settings
+        // portal; covers XFCE, openbox, etc. with a dark theme.
+        if (const char* theme = std::getenv("GTK_THEME")) {
+            std::string t(theme);
+            std::transform(t.begin(), t.end(), t.begin(), ::tolower);
+            if (t.find("dark") != std::string::npos) {
+                cachedValue = true;
+                return cachedValue;
+            }
+        }
+
         FILE* pipe = popen("dbus-send --session --dest=org.freedesktop.portal.Desktop --print-reply /org/freedesktop/portal/desktop org.freedesktop.portal.Settings.ReadOne "
                            "string:'org.freedesktop.appearance' string:'color-scheme' 2>/dev/null",
                            "r");
@@ -104,7 +128,8 @@ namespace fcitx {
                 uint32_t value = 0;
                 if (sscanf(buffer, "%*[^v]variant uint32 %u", &value) == 1) {
                     pclose(pipe);
-                    return value == 1;
+                    cachedValue = value == 1;
+                    return cachedValue;
                 }
             }
             pclose(pipe);
@@ -115,12 +140,29 @@ namespace fcitx {
             char buffer[256];
             if (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
                 pclose(pipe);
-                return strstr(buffer, "prefer-dark") != nullptr;
+                cachedValue = strstr(buffer, "prefer-dark") != nullptr;
+                return cachedValue;
             }
             pclose(pipe);
         }
 
-        return false;
+        // GTK settings file — covers DEs where the dark preference is stored
+        // there instead of being exposed via portal/gsettings.
+        if (const char* home = std::getenv("HOME")) {
+            std::ifstream settingsFile(std::string(home) + "/.config/gtk-3.0/settings.ini");
+            if (settingsFile.is_open()) {
+                std::string line;
+                while (std::getline(settingsFile, line)) {
+                    if (line.find("gtk-application-prefer-dark-theme=1") != std::string::npos) {
+                        cachedValue = true;
+                        return cachedValue;
+                    }
+                }
+            }
+            settingsFile.close();
+        }
+
+        return cachedValue;
     }
 
     static inline uintptr_t newMacroTable(const lotusMacroTable& macroTable) {
@@ -1104,19 +1146,59 @@ namespace fcitx {
             default: baseIconName = "fcitx-lotus"; break;
         }
 
+        std::string iconName;
         if (*config_.useLotusIcons) {
-            return baseIconName;
+            iconName = baseIconName;
+        } else {
+            const auto& iconTheme = config_.iconTheme.value();
+            if (iconTheme == IconTheme::Light) {
+                iconName = baseIconName + "-default-black";
+            } else if (iconTheme == IconTheme::Dark) {
+                iconName = baseIconName + "-default";
+            } else {
+                iconName = baseIconName + (isDarkMode() ? "-default" : "-default-black");
+            }
         }
 
-        const auto& iconTheme = config_.iconTheme.value();
-        if (iconTheme == IconTheme::Light) {
-            return baseIconName + "-default-black";
-        }
-        if (iconTheme == IconTheme::Dark) {
-            return baseIconName + "-default";
+        // ── Cinnamon: return icon NAME (not absolute path) ──────────────────
+        // Cinnamon's tray uses XApp Status Applet (SNI).  The IconName property
+        // is sent over D-Bus and resolved via Gtk.IconTheme — which only
+        // understands theme icon names, not filesystem paths.
+        //
+        // On KDE and GNOME, absolute paths work correctly — their compositors
+        // or SNI hosts handle filesystem paths in IconName.
+        static const bool kIsCinnamon = [] {
+            const char* de = std::getenv("XDG_CURRENT_DESKTOP");
+            if (!de)
+                de = std::getenv("DESKTOP_SESSION");
+            return de && (std::string(de) == "cinnamon" || std::string(de) == "X-Cinnamon");
+        }();
+
+        if (kIsCinnamon) {
+            return iconName;
         }
 
-        return baseIconName + (isDarkMode() ? "-default" : "-default-black");
+        // Cache keyed on the resolved icon name — mode/theme changes
+        // re-resolve automatically, no manual invalidation needed.
+        if (iconCacheName_ == iconName && !iconCachePath_.empty()) {
+            return iconCachePath_;
+        }
+        iconCacheName_ = iconName;
+
+        // ── Default: resolve to absolute path (KDE, GNOME, etc.) ───────────
+        // Return absolute path to bypass XDG icon theme lookup, which fails on
+        // many non-Breeze icon themes despite the icon being installed in
+        // hicolor and breeze fallback directories.
+        LotusIconSearchPaths paths;
+        // hicolor status/apps dirs; SVG preferred, PNG only as raster fallback.
+        paths.systemDirs = {
+            "/usr/share/icons/hicolor/22x22/status",  "/usr/share/icons/hicolor/24x24/status", "/usr/share/icons/hicolor/scalable/status",
+            "/usr/share/icons/hicolor/scalable/apps", "/usr/share/icons/hicolor/48x48/apps",
+        };
+        paths.fallbackDir = FCITX_LOTUS_ICON_DIR; // compile-time install dir
+
+        iconCachePath_ = resolveLotusIconPath({iconName, baseIconName}, paths);
+        return iconCachePath_;
     }
 
     std::string LotusEngine::subModeLabelImpl(const InputMethodEntry& /*entry*/, InputContext& /*inputContext*/) {

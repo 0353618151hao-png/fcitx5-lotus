@@ -1,5 +1,5 @@
 Name:           fcitx5-lotus
-Version:        3.5.2
+Version:        3.5.3
 Release:        1
 Summary:        Vietnamese input method for fcitx5
 License:        GPL-3.0-or-later
@@ -19,7 +19,7 @@ BuildRequires:  libX11-devel
 
 BuildRequires:  golang
 BuildRequires:  python3
-BuildRequires:  libgudev-devel
+BuildRequires:  librsvg2-tools
 
 %{?systemd_requires}
 Requires:       fcitx5-data
@@ -81,6 +81,10 @@ Vietnamese input method for fcitx5
 %{_datadir}/icons/hicolor/scalable/apps/fcitx-lotus-emoji-default-black.svg
 %{_datadir}/icons/hicolor/scalable/apps/fcitx-lotus-default-black.svg
 %{_datadir}/icons/hicolor/scalable/apps/fcitx-lotus-off-default-black.svg
+
+# Absolute-path icon resolution (see lotus-engine.cpp subModeIconImpl)
+%{_datadir}/icons/hicolor/scalable/status/fcitx-lotus*.svg
+%{_datadir}/icons/hicolor/*/status/fcitx-lotus*.png
 
 %{_datadir}/icons/breeze/status/22/fcitx-lotus-default.svg
 %{_datadir}/icons/breeze/status/22/fcitx-lotus-off-default.svg
@@ -166,5 +170,6 @@ fi
 %systemd_postun_with_restart fcitx5-lotus-server@.service
 
 %changelog
-* Sat Aug 15 2026 Nguyen Hoang Ky <nhktmdzhg@gmail.com> - 3.5.2-1
-- Fix option [{}]->ưƯƠơ wrong when enable CapsLock
+* Thu Aug 20 2026 Nguyen Hoang Ky <nhktmdzhg@gmail.com> - 3.5.3-1
+- Fix cannot use ctrl to commit in preedit mode
+- Fix detect icon theme in various environment

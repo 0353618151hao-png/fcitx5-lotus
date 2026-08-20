@@ -34,7 +34,7 @@
       <img src="https://img.shields.io/github/issues/LotusInputMethod/fcitx5-lotus?style=flat&color=red" alt="Issues">
     </a>
     <a href="#contributors-">
-      <img src="https://img.shields.io/badge/all_contributors-15-orange.svg?style=flat-square" alt="All Contributors">
+      <img src="https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square" alt="All Contributors">
     </a>
     <a href="https://deepwiki.com/LotusInputMethod/fcitx5-lotus"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
   </p>
@@ -67,10 +67,10 @@ If you want to compile the input method from source to contribute or customize:
 
 ### Dependencies
 
-- **Debian/Ubuntu:** `sudo apt-get install cmake extra-cmake-modules libfcitx5core-dev libfcitx5config-dev libfcitx5utils-dev libinput-dev libudev-dev g++ golang hicolor-icon-theme pkg-config libx11-dev fcitx5-modules-dev python3-qtpy python3-dbus acl`
-- **Fedora/RHEL:** `sudo dnf install cmake extra-cmake-modules fcitx5-devel libinput-devel libudev-devel gcc-c++ golang hicolor-icon-theme systemd-devel libX11-devel python3-pyside6 python3-QtPy python3-dbus acl`
-- **openSUSE:** `sudo zypper install cmake extra-cmake-modules fcitx5-devel libinput-devel systemd-devel gcc-c++ go hicolor-icon-theme systemd-devel libX11-devel udev python3-pyside6 python3-QtPy python3-dbus-python acl`
-- **Arch:** `sudo pacman -S --needed cmake extra-cmake-modules gcc go git libx11 python make pkgconf acl fcitx5 libinput hicolor-icon-theme python-qtpy python-dbus`
+- **Debian/Ubuntu:** `sudo apt-get install cmake extra-cmake-modules libfcitx5core-dev libfcitx5config-dev libfcitx5utils-dev libinput-dev libudev-dev g++ golang hicolor-icon-theme pkg-config libx11-dev fcitx5-modules-dev python3-qtpy python3-dbus acl librsvg2-bin`
+- **Fedora/RHEL:** `sudo dnf install cmake extra-cmake-modules fcitx5-devel libinput-devel libudev-devel gcc-c++ golang hicolor-icon-theme systemd-devel libX11-devel python3-pyside6 python3-QtPy python3-dbus acl librsvg2-tools`
+- **openSUSE:** `sudo zypper install cmake extra-cmake-modules fcitx5-devel libinput-devel systemd-devel gcc-c++ go hicolor-icon-theme systemd-devel libX11-devel udev python3-pyside6 python3-QtPy python3-dbus-python acl rsvg-convert`
+- **Arch:** `sudo pacman -S --needed cmake extra-cmake-modules gcc go git libx11 python make pkgconf acl fcitx5 libinput hicolor-icon-theme python-qtpy python-dbus librsvg`
 
 ### Install
 
@@ -135,6 +135,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="25%"><a href="https://github.com/0353618151hao-png"><img src="https://avatars.githubusercontent.com/u/259352926?v=4?s=100" width="100px;" alt="nothing"/><br /><sub><b>nothing</b></sub></a><br /><a href="https://github.com/LotusInputMethod/fcitx5-lotus/commits?author=0353618151hao-png" title="Code">💻</a></td>
       <td align="center" valign="top" width="25%"><a href="https://github.com/dismonjames"><img src="https://avatars.githubusercontent.com/u/158133523?v=4?s=100" width="100px;" alt="Lê Hùng Quang Minh"/><br /><sub><b>Lê Hùng Quang Minh</b></sub></a><br /><a href="https://github.com/LotusInputMethod/fcitx5-lotus/commits?author=dismonjames" title="Code">💻</a></td>
       <td align="center" valign="top" width="25%"><a href="https://github.com/naoNao89"><img src="https://avatars.githubusercontent.com/u/90588855?v=4?s=100" width="100px;" alt="Cả thế giới là Rust"/><br /><sub><b>Cả thế giới là Rust</b></sub></a><br /><a href="https://github.com/LotusInputMethod/fcitx5-lotus/commits?author=naoNao89" title="Code">💻</a></td>
+      <td align="center" valign="top" width="25%"><a href="https://github.com/collyn"><img src="https://avatars.githubusercontent.com/u/13034759?v=4?s=100" width="100px;" alt="Nguyen Tien Huy"/><br /><sub><b>Nguyen Tien Huy</b></sub></a><br /><a href="https://github.com/LotusInputMethod/fcitx5-lotus/commits?author=collyn" title="Code">💻</a></td>
     </tr>
   </tbody>
   <tfoot>
