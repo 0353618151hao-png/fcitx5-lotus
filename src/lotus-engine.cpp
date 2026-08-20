@@ -419,7 +419,7 @@ namespace fcitx {
         return *config_.inputMethod;
     }
 
-    void LotusEngine::activate(const InputMethodEntry& entry, InputContextEvent& event) {
+    void LotusEngine::activate(const InputMethodEntry& /*entry*/, InputContextEvent& event) {
         auto*                    ic        = event.inputContext();
         const bool               surrvalid = ic->surroundingText().isValid();
         const bool               is_dbus   = getFrontendName(ic) == "dbus";
@@ -440,17 +440,6 @@ namespace fcitx {
         updateCharsetAction(event.inputContext());
 
         setMode(targetMode, event.inputContext());
-
-        // Sync the IM entry icon (IM list / context menu) with the current
-        // mode icon.  subModeIconImpl handles the tray indicator, but the
-        // addon/IM list icon comes from InputMethodEntry::icon(), which
-        // defaults to the static Icon= in lotus.conf and is resolved via the
-        // system icon theme — bypass it the same way.  Must run after
-        // setMode() so the resolved icon matches the new mode.
-        {
-            const std::string resolved = subModeIconImpl(entry, *ic);
-            const_cast<InputMethodEntry&>(entry).setIcon(resolved);
-        }
 
         auto* state = ic->propertyFor(&factory_);
 
@@ -1200,10 +1189,10 @@ namespace fcitx {
         // many non-Breeze icon themes despite the icon being installed in
         // hicolor and breeze fallback directories.
         LotusIconSearchPaths paths;
-        // PNG-first dirs (generated at build time), then SVG-only dirs.
+        // hicolor status/apps dirs; SVG preferred, PNG only as raster fallback.
         paths.systemDirs = {
             "/usr/share/icons/hicolor/22x22/status",  "/usr/share/icons/hicolor/24x24/status", "/usr/share/icons/hicolor/scalable/status",
-            "/usr/share/icons/hicolor/scalable/apps", "/usr/share/icons/hicolor/48x48/apps",   "/usr/share/pixmaps",
+            "/usr/share/icons/hicolor/scalable/apps", "/usr/share/icons/hicolor/48x48/apps",
         };
         paths.fallbackDir = FCITX_LOTUS_ICON_DIR; // compile-time install dir
 

@@ -86,7 +86,6 @@ Vietnamese input method for fcitx5
 # Absolute-path icon resolution (see lotus-engine.cpp subModeIconImpl)
 %{_datadir}/icons/hicolor/scalable/status/fcitx-lotus*.svg
 %{_datadir}/icons/hicolor/*/status/fcitx-lotus*.png
-%{_datadir}/pixmaps/fcitx-lotus*.*
 
 %{_datadir}/icons/breeze/status/22/fcitx-lotus-default.svg
 %{_datadir}/icons/breeze/status/22/fcitx-lotus-off-default.svg

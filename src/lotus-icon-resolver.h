@@ -28,8 +28,8 @@ namespace fcitx {
 
     struct LotusIconSearchPaths {
         // System install directories, searched in order.  Each is probed as
-        // "<dir>/<name>.png" then "<dir>/<name>.svg" (PNG first: Qt and some
-        // compositors render PNGs natively without an SVG plugin).
+        // "<dir>/<name>.svg" then "<dir>/<name>.png" (SVG first; PNG only as
+        // a raster fallback).
         std::vector<std::string> systemDirs;
         // Fallback directory — the compile-time install dir, always present.
         // Used as "<fallbackDir>/<first name>.svg" when nothing else exists.
@@ -40,7 +40,7 @@ namespace fcitx {
      * @brief Resolves the absolute path of a Lotus icon.
      *
      * Probes each candidate name (variant first, plain mode icon second) in
-     * every system directory, PNG before SVG.  Returns the fallback path if
+     * every system directory, SVG before PNG.  Returns the fallback path if
      * nothing readable is found.
      *
      * @param names Candidate icon base names, in priority order.

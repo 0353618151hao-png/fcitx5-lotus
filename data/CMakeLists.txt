@@ -2,11 +2,10 @@ install(DIRECTORY icons/ DESTINATION "${CMAKE_INSTALL_DATADIR}/icons/"
     PATTERN .* EXCLUDE
     PATTERN *~ EXCLUDE)
 
-# ── Status/tray icon coverage: hicolor status/ + pixmaps/ ─────────────────
-# The engine resolves icons to absolute paths (see lotus-engine.cpp
+# ── Status/tray icon coverage: hicolor status/ ────────────────────────────
+# Engine resolves icons to absolute paths (see lotus-engine.cpp
 # subModeIconImpl) to bypass XDG icon theme lookup on non-Breeze themes.
-# The resolver probes hicolor status dirs and pixmaps, so install copies of
-# every variant there in addition to the breeze/breeze-dark theme dirs.
+# Install copies of every variant into hicolor status dirs (SVG + PNG).
 set(LOTUS_STATUS_ICONS
     fcitx-lotus fcitx-lotus-off fcitx-lotus-emoji
     fcitx-lotus-default fcitx-lotus-default-black
@@ -18,16 +17,10 @@ foreach(ICON ${LOTUS_STATUS_ICONS})
     install(FILES icons/hicolor/scalable/apps/${ICON}.svg
         DESTINATION "${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/status"
         RENAME "${ICON}.svg")
-
-    # pixmaps/ — last-resort fallback for all DEs, Qt, GTK, KWin
-    install(FILES icons/hicolor/scalable/apps/${ICON}.svg
-        DESTINATION "${CMAKE_INSTALL_DATADIR}/pixmaps"
-        RENAME "${ICON}.svg")
 endforeach()
 
-# PNG tray icons: some SNI hosts (KWin/plasmashell) render PNGs natively but
-# not SVGs.  Generate 22/24px status PNGs and a 128px pixmaps PNG per icon
-# when rsvg-convert is available.
+# PNG tray icons: 22/24px status PNGs per icon (build-time, rsvg-convert).
+# PNG is only a raster fallback; the resolver prefers SVG.
 find_program(RSVG_CONVERT rsvg-convert REQUIRED)
 set(LOTUS_PNG_OUTPUTS)
 
@@ -46,16 +39,6 @@ foreach(ICON ${LOTUS_STATUS_ICONS})
             DESTINATION "${CMAKE_INSTALL_DATADIR}/icons/hicolor/${SIZE}x${SIZE}/status")
         list(APPEND LOTUS_PNG_OUTPUTS ${OUT})
     endforeach()
-
-    set(PIX_OUT "${CMAKE_CURRENT_BINARY_DIR}/pixmaps/${ICON}.png")
-    add_custom_command(OUTPUT ${PIX_OUT}
-        COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/pixmaps"
-        COMMAND ${RSVG_CONVERT} -w 128 -h 128 ${ICON_SVG} -o ${PIX_OUT}
-        DEPENDS ${ICON_SVG}
-        COMMENT "Generating 128x128 pixmaps icon for ${ICON}")
-    install(FILES ${PIX_OUT}
-        DESTINATION "${CMAKE_INSTALL_DATADIR}/pixmaps")
-    list(APPEND LOTUS_PNG_OUTPUTS ${PIX_OUT})
 endforeach()
 
 add_custom_target(lotus_icons ALL DEPENDS ${LOTUS_PNG_OUTPUTS})

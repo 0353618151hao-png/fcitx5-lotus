@@ -24,11 +24,11 @@ namespace fcitx {
 
     std::string resolveLotusIconPath(const std::vector<std::string>& names, const LotusIconSearchPaths& paths) {
         // 1. Probe each candidate name in each system directory.
-        //    PNG first: Qt renders PNG natively without plugins; engines with
-        //    SVG-only dirs still get SVG because PNG won't exist there.
+        //    SVG first (crisp at any size); PNG only as a raster fallback
+        //    when the directory has no SVG.
         for (const auto& name : names) {
             for (const auto& dir : paths.systemDirs) {
-                for (const char* ext : {".png", ".svg"}) {
+                for (const char* ext : {".svg", ".png"}) {
                     const std::string p = joinPath(dir, name + ext);
                     if (fileReadable(p))
                         return p;
