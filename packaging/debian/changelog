@@ -1,5 +1,6 @@
-fcitx5-lotus (3.5.2-1) unstable; urgency=medium
+fcitx5-lotus (3.5.3-1) unstable; urgency=medium
 
-  * Fix option [{}]->ưƯƠơ wrong when enable CapsLock
+  * Fix cannot use ctrl to commit in preedit mode
+  * Fix detect icon theme in various environment
 
- -- Nguyen Hoang Ky <nhktmdzhg@gmail.com>  Sat, 15 Aug 2026 22:17:00 +0700
+ -- Nguyen Hoang Ky <nhktmdzhg@gmail.com>  Thu, 20 Aug 2026 23:16:00 +0700
