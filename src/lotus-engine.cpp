@@ -159,6 +159,7 @@ namespace fcitx {
                     }
                 }
             }
+            settingsFile.close();
         }
 
         return cachedValue;
