@@ -128,10 +128,6 @@ Vietnamese input method for fcitx5
 
 %{_datadir}/metainfo/org.fcitx.Fcitx5.Addon.Lotus.metainfo.xml
 
-%clean
-rm -rf %{buildroot}
-rm -rf %{_builddir}/%{name}-%{version}
-
 %post
 %systemd_post fcitx5-lotus-server@.service
 if [ -x /usr/bin/udevadm ]; then
