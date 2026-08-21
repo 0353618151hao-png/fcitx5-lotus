@@ -129,10 +129,6 @@ Vietnamese input method for fcitx5
 
 %{_datadir}/metainfo/org.fcitx.Fcitx5.Addon.Lotus.metainfo.xml
 
-%clean
-rm -rf %{buildroot}
-rm -rf %{_builddir}/%{name}-%{version}
-
 %pre
 %sysusers_create_package lotus %{_prefix}/lib/sysusers.d/lotus.conf
 
