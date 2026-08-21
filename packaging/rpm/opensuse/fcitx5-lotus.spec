@@ -170,6 +170,6 @@ fi
 %systemd_postun_with_restart fcitx5-lotus-server@.service
 
 %changelog
-* Thu Aug 20 2026 Nguyen Hoang Ky <nhktmdzhg@gmail.com> - 3.5.2-1
+* Thu Aug 20 2026 Nguyen Hoang Ky <nhktmdzhg@gmail.com> - 3.5.3-1
 - Fix cannot use ctrl to commit in preedit mode
 - Fix detect icon theme in various environment
